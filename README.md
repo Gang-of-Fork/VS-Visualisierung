@@ -48,3 +48,14 @@
 ]
 ```
 
+## Erläuterung
+- "A | B" bedeutet, dass die property entweder den Wert "A" oder "B" annimmt
+- die Types RREQ, RRES, DATA, RERR, ACK stellen jeweils Übertragungen des jeweiligen Pakettyps dar, RTU stellt ein Routing Tabellen Update dar.
+- receiving_discarding enthält nodeIds von nodes, die das Paket empfangen aber nicht verarbeiten
+- receiving_processing enthält nodeIds von nodes, die das Paket empfangen und auch verarbeiten
+- RREQ = Routing REQuest packet
+- RRES = Routing RESponse packet
+- RERR = Routing ERRor packet
+- ACK = ACKnoledgement packet
+- DATA = DATA packet
+- RTU = Routing Table Update
