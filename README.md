@@ -4,7 +4,10 @@
 ```
 [
   {
-    "type":"RREQ | RRES | DATA | RERR | ACK | RTU",
+    "type":"RREQ | RRES | DATA | RERR | ACK | RTU | INIT",
+    "xsize": number,
+    "ysize": number,
+    //number of nodes is equal to length of nodes array
     "nodes": [
       {
         "x": number,
