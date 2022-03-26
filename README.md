@@ -4,7 +4,10 @@
 ```
 [
   {
-    "type":"RREQ | RRES | DATA | RERR | ACK | RTU",
+    "type":"RREQ | RRES | DATA | RERR | ACK | RTU | INIT",
+    "xsize": number,
+    "ysize": number,
+    //number of nodes is equal to length of nodes array
     "nodes": [
       {
         "x": number,
@@ -39,7 +42,7 @@
     
     //table_update property is only set on type RTU
     "table_update": {
-      "type": "add | remove"
+      "type": "add | remove | update"
       "node": string (NodeId),
       "destination": string (NodeId),
       //route contains new route on add and old route on remove 
