@@ -70,14 +70,26 @@
             const width = 800 - margin.left - margin.right;
             const height = 800 - margin.top - margin.bottom;
 
+            //reset function for later selection
+            const resetSelection = function () {
+                console.log("reset")
+                d3.selectAll("circle").attr("stroke", "black");
+                return nodeInfo 
+                    .style("visibility", "visible")
+                    .style("position", "relative")
+                    .html(`<h5 class="card-title">Node Info</h5>
+                  <p class="card-text">Select a node to get more informations</p>`);
+            }
+
             //append the svg object to the visualization div
             const svg = d3.select("#visualization")
                 .append("svg")
+                .on("click", resetSelection)
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
                 // translate this svg element to leave some margin.
                 .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
             // X scale and Axis
             const x = d3.scaleLinear()
@@ -96,7 +108,7 @@
 
             svg
                 .append('g')
-                .call(d3.axisLeft(y));
+                .call(d3.axisLeft(y))
 
             const tooltip = d3.select("#visualization")
                 .append("div")
@@ -129,6 +141,8 @@
             const mouseleave = function () { return tooltip.style("visibility", "hidden"); }
 
             const click = function (d) {
+                event.stopPropagation();
+                console.log("selection");
                 //remove card info
                 d3.select("#initNodeInfo").remove();
                 //reset color of all nodes in range
