@@ -33,7 +33,7 @@
             <div id="nodeInfo" class="card" style="width: 18rem;">
                 <div id="initNodeInfo" class="card-body">
                   <h5 class="card-title">Node Info</h5>
-                  <p class="card-text">Select a node to get more informations</p>
+                  <p class="card-text">Selektiere eine Node um weitere Informationen zu erhalten</p>
                 </div>
               </div>
         </div>
@@ -72,13 +72,12 @@
 
             //reset function for later selection
             const resetSelection = function () {
-                console.log("reset")
                 d3.selectAll("circle").attr("stroke", "black");
                 return nodeInfo 
                     .style("visibility", "visible")
                     .style("position", "relative")
                     .html(`<h5 class="card-title">Node Info</h5>
-                  <p class="card-text">Select a node to get more informations</p>`);
+                  <p class="card-text">Selektiere eine Node um weitere Informationen zu erhalten</p>`);
             }
 
             //append the svg object to the visualization div
@@ -128,6 +127,7 @@
 
             //define Node-Events
             const mouseover = function (d) {
+                d3.select(this).style("cursor", "pointer");
                 return tooltip
                     .style("visibility", "visible")
                     .html("Node ID: " + d.id + "<br/> X: " + d.x + " Y: " + d.y);
@@ -138,11 +138,13 @@
                     .style("left", (event.pageX + 20) + "px")
             }
 
-            const mouseleave = function () { return tooltip.style("visibility", "hidden"); }
+            const mouseleave = function () { 
+                d3.select(this).style("cursor", "default"); 
+                return tooltip.style("visibility", "hidden"); 
+            }
 
             const click = function (d) {
                 event.stopPropagation();
-                console.log("selection");
                 //remove card info
                 d3.select("#initNodeInfo").remove();
                 //reset color of all nodes in range
@@ -153,12 +155,19 @@
                     d3.select(`#nodeCircle${x}`).attr("stroke", "blue");
                 }
                 //add node info in card on right side
+                let html = `<h5 class="card-title">Node Info</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Node ID: ${d.id}</h6>
+                        <p class="card-text">X: ${d.x}, Y: ${d.y} </br>`
+                if(d.routingTable.length > 0){
+                    html += `Routing Tabelle: ${d.routingTable} </br>` 
+                }
+                if(d.inRange.length > 0){
+                    html += `In Reichweite: ${d.inRange}</p>`
+                }
                 return nodeInfo 
                     .style("visibility", "visible")
                     .style("position", "relative")
-                    .html(`<h5 class="card-title">Node Info</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Node ID: ${d.id}</h6>
-                        <p class="card-text">X: ${d.x}, Y: ${d.y} <br/> Routing Table: ${d.routingTable} </br> In Range: ${d.inRange}</p>`);
+                    .html(html);
             }
 
             const elemEnter = svg
@@ -197,7 +206,7 @@
 
 
 
-        var data = [{ x: 10, y: 20, id: 1 }, { x: 40, y: 90, id: 2 }, { x: 80, y: 50, id: 3 }]
+        var data = []
 
         initViz(data);
 
