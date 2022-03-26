@@ -30,10 +30,12 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-body">
+            <div id="nodeInfo" class="card" style="width: 18rem;">
+                <div id="initNodeInfo" class="card-body">
+                  <h5 class="card-title">Node Info</h5>
+                  <p class="card-text">Select a node to get more informations</p>
                 </div>
-            </div>
+              </div>
         </div>
     </div>
 
@@ -98,16 +100,24 @@
 
             const tooltip = d3.select("#visualization")
                 .append("div")
+                .classed("card", true)
                 .attr("id", "circleBasicTooltip")
                 .style("position", "absolute")
                 .style("visibility", "hidden")
                 .text("I'm a circle!");
 
+            const nodeInfo = d3.select("#nodeInfo")
+                .append("div")
+                .classed("card-body", true)
+                .style("position", "absolute")
+                .style("visibility", "hidden")
+                .text("I'm a Node Info");
+
             //define Node-Events
             const mouseover = function (d) {
                 return tooltip
                     .style("visibility", "visible")
-                    .html("X: " + d.x + " Y: " + d.y);
+                    .html("Node ID: " + d.id + "<br/> X: " + d.x + " Y: " + d.y);
             }
 
             const mousemove = function () {
@@ -116,6 +126,16 @@
             }
 
             const mouseleave = function () { return tooltip.style("visibility", "hidden"); }
+
+            const click = function (d) {
+                d3.select("#initNodeInfo").remove();
+                return nodeInfo 
+                    .style("visibility", "visible")
+                    .style("position", "relative")
+                    .html(`<h5 class="card-title">Node Info</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Node ID: ${d.id}</h6>
+                        <p class="card-text">X: ${d.x}, Y: ${d.y}</p>`);
+            }
 
             const elemEnter = svg
                 .selectAll("enterEle")
@@ -139,7 +159,8 @@
                 .attr("fill", "transparent")
                 .on("mouseover", mouseover)
                 .on("mousemove", mousemove)
-                .on("mouseleave", mouseleave);
+                .on("mouseleave", mouseleave)
+                .on("click", click);
         }
 
         function resetViz() {
