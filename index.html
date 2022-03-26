@@ -104,6 +104,7 @@
                 .attr("id", "circleBasicTooltip")
                 .style("position", "absolute")
                 .style("visibility", "hidden")
+                .style("z-index", "900")
                 .text("I'm a circle!");
 
             const nodeInfo = d3.select("#nodeInfo")
@@ -128,13 +129,22 @@
             const mouseleave = function () { return tooltip.style("visibility", "hidden"); }
 
             const click = function (d) {
+                //remove card info
                 d3.select("#initNodeInfo").remove();
+                //reset color of all nodes in range
+                d3.selectAll("circle").attr("stroke", "black");
+                //change color of nodes in range
+                d3.select(`#nodeCircle${d.id}`).attr("stroke", "orange");
+                for(let x of d.inRange){
+                    d3.select(`#nodeCircle${x}`).attr("stroke", "blue");
+                }
+                //add node info in card on right side
                 return nodeInfo 
                     .style("visibility", "visible")
                     .style("position", "relative")
                     .html(`<h5 class="card-title">Node Info</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Node ID: ${d.id}</h6>
-                        <p class="card-text">X: ${d.x}, Y: ${d.y}</p>`);
+                        <p class="card-text">X: ${d.x}, Y: ${d.y} <br/> Routing Table: ${d.routingTable} </br> In Range: ${d.inRange}</p>`);
             }
 
             const elemEnter = svg
@@ -144,6 +154,7 @@
 
             const texts = elemEnter
                 .append("text")
+                .attr("id", function(d) { return "nodeText" + d.id })
                 .attr("x", function (d) { return x(d.x) })
                 .attr("y", function (d) { return y(d.y) + 0.4 * label_size })
                 .attr('font-size', label_size)
@@ -152,6 +163,7 @@
 
             const circles = elemEnter
                 .append("circle")
+                .attr("id", function(d) { return "nodeCircle" + d.id })
                 .attr("cx", function (d) { return x(d.x) })
                 .attr("cy", function (d) { return y(d.y) })
                 .attr("r", dot_radius)
@@ -186,14 +198,19 @@
 
             reader.addEventListener('load', (event) => {
                 const parsed = JSON.parse(event.target.result);
+                console.log(parsed);
+
+                const init = parsed.filter(d => d.type == "INIT")[0];
+
+                console.log(init);
 
                 //set config
-                document.getElementById("numOfNodes").innerHTML = parsed.config.numOfNodes;
-                document.getElementById("xsize").innerHTML = parsed.config.xsize;
-                document.getElementById("ysize").innerHTML = parsed.config.ysize;
+                document.getElementById("numOfNodes").innerHTML = init.nodes.length;
+                document.getElementById("xsize").innerHTML = init.xsize;
+                document.getElementById("ysize").innerHTML = init.ysize;
 
                 resetViz();
-                initViz(parsed.nodes);
+                initViz(init.nodes);
             });
 
             reader.readAsText(this.files[0])
