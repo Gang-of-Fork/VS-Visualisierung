@@ -42,7 +42,7 @@
     
     //table_update property is only set on type RTU
     "table_update": {
-      "type": "add | remove"
+      "type": "add | remove | update"
       "node": string (NodeId),
       "destination": string (NodeId),
       //route contains new route on add and old route on remove 
