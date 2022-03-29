@@ -1,5 +1,8 @@
 # Visualisierung
-
+## Dev-Hinweise
+- Methode zum erzeugen von Pfeilen zwischen nodes: `connectNodesByArrow(nodeFrom, nodeTo, svg)`
+- nodeFrom und nodeTo sind json Objekte, die aus dem data.nodes array entnehmbar sind
+- svg ist das svg Element, dass z.B. am Anfang der `initViz()` Methode definiert wird (heißt auch svg im Moment)
 ## Ausgabe der Simulation (json Format)
 ```
 [
