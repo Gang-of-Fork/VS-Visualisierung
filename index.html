@@ -192,15 +192,6 @@
                 .data(data)
                 .enter()
 
-            const texts = elemEnter
-                .append("text")
-                .attr("id", function(d) { return "nodeText" + d.id })
-                .attr("x", function (d) { return x(d.x) })
-                .attr("y", function (d) { return y(d.y) + 0.4 * label_size })
-                .attr('font-size', label_size)
-                .attr("text-anchor", "middle")
-                .text(function (d) { return "" + d.id });
-
             const circles = elemEnter
                 .append("circle")
                 .attr("id", function(d) { return "nodeCircle" + d.id})
@@ -213,6 +204,15 @@
                 .on("mousemove", mousemove)
                 .on("mouseleave", mouseleave)
                 .on("click", click);
+
+                const texts = elemEnter
+                .append("text")
+                .attr("id", function(d) { return "nodeText" + d.id })
+                .attr("x", function (d) { return x(d.x) })
+                .attr("y", function (d) { return y(d.y) + 0.4 * label_size })
+                .attr('font-size', label_size)
+                .attr("text-anchor", "middle")
+                .text(function (d) { return "" + d.id });
         }
 
         function resetViz() {
@@ -230,7 +230,6 @@
             d3.select(`#nodeCircle${data.actions.receiving_processing}`).attr("fill", "#82e2ff");
 
             
-            console.log(data.actions.sending);
         };
 
 
