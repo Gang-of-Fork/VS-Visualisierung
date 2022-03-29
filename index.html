@@ -29,6 +29,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="row">
                 <div class="col">
                     <div id="nodeInfo" class="card" style="width: 18rem;">
@@ -49,8 +50,9 @@
                     <div style="text-align: center; margin-top: 20px;">
                         <div id="dataRagenSlider"></div>
                     </div>
+
                 </div>
-            </div>
+              </div>
         </div>
     </div>
 
@@ -73,35 +75,21 @@
 
     <!-- Configuration constants -->
     <script>
-        //UOM is scaled units not px 
-        const dot_radius = 2;
-        
+        const dot_radius = 10;
+        const label_size = dot_radius * 0.9;
     </script>
 
     <!-- Custom D3.js code -->
     <script>
-        var currentState = 0;
-        var testdata; //will be assigned if data is read
-        
-        
-        // set the dimensions and margins of the graph
-        const margin = { top: 30, right: 30, bottom: 30, left: 30 };
-        const width = 800 - margin.left - margin.right;
-        const height = 800 - margin.top - margin.bottom;
-        
-        const rScale = d3.scaleLinear()
-            .domain([0, 100])
-            .range([0, height])
-
-        const label_size = rScale(dot_radius) * 0.9;
-        
-            function initViz(data) {
+        function initViz(data) {
+            // set the dimensions and margins of the graph
+            const margin = { top: 10, right: 40, bottom: 30, left: 30 };
+            const width = 800 - margin.left - margin.right;
+            const height = 800 - margin.top - margin.bottom;
 
             //reset function for later selection
             const resetSelection = function () {
                 d3.selectAll("circle").attr("stroke", "black");
-                //remove card info
-                d3.select("#initNodeInfo").remove();
                 return nodeInfo 
                     .style("visibility", "visible")
                     .style("position", "relative")
@@ -113,7 +101,6 @@
             const svg = d3.select("#visualization")
                 .append("svg")
                 .on("click", resetSelection)
-                .attr("id", "svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
                 // translate this svg element to leave some margin.
@@ -165,7 +152,7 @@
 
             const mousemove = function () {
                 return tooltip.style("top", (event.pageY - 20) + "px")
-                    .style("left", (event.pageX + 20) + "px");
+                    .style("left", (event.pageX + 20) + "px")
             }
 
             const mouseleave = function () { 
@@ -216,10 +203,10 @@
 
             const circles = elemEnter
                 .append("circle")
-                .attr("id", function(d) { return "nodeCircle" + d.id })
+                .attr("id", function(d) { return "nodeCircle" + d.id})
                 .attr("cx", function (d) { return x(d.x) })
                 .attr("cy", function (d) { return y(d.y) })
-                .attr("r", rScale(dot_radius))
+                .attr("r", dot_radius)
                 .attr("stroke", "black")
                 .attr("fill", "transparent")
                 .on("mouseover", mouseover)
@@ -233,12 +220,27 @@
             document.getElementById("visualization").innerHTML = "";
         }
 
+
+        function rreqViz(data){
+            //color sending, receiving_discarding and receiving_processing
+            d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#5d8e91");
+            for(let i = 0; i < data.actions.receiving_discarding.length; i++){
+                d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "#757575");
+            }
+            d3.select(`#nodeCircle${data.actions.receiving_processing}`).attr("fill", "#82e2ff");
+
+            
+            console.log(data.actions.sending);
+        };
+
+
         function changeState(d){
             d3.select(`#logElement${currentState}`).style("color", "black").style("font-weight", "normal");
             currentState = d;
             d3.select(`#logElement${currentState}`).style("color", "green").style("font-weight", "700");
             //here switch case if testdata[currentState].type === RREQ than function ...
         }
+
 
         var data = []
 
@@ -254,13 +256,14 @@
             const reader = new FileReader();
 
             reader.addEventListener('load', (event) => {
-                //reset log data
-                d3.select("#initDataLog").remove()
-
                 const parsed = JSON.parse(event.target.result);
-                testdata = parsed;
+                console.log(parsed);
 
                 const init = parsed.filter(d => d.type == "INIT")[0];
+                const rreq = parsed.filter(d => d.type == "RREQ")[0];
+
+                console.log(rreq);
+                console.log(init);
 
                 //set config
                 document.getElementById("numOfNodes").innerHTML = init.nodes.length;
@@ -269,6 +272,7 @@
 
                 resetViz();
                 initViz(init.nodes);
+                rreqViz(rreq);
                 let html = `<h5 class="card-title">Daten Log</h5>`;
                 for(x in parsed){
                     html += `<span id="logElement${x}">${x}: ${parsed[x].type}<br/></span>`;
@@ -278,126 +282,10 @@
                 d3.select(`#logElement${currentState}`).style("color", "green").style("font-weight", "700");
 
                 document.getElementById("dataRagenSlider").innerHTML = `<input type="range" class="form-range" min="0" max="${parsed.length-1}" value=${currentState} step="1" oninput="changeState(this.value)" id="customRange3">`;
+
             });
 
             reader.readAsText(this.files[0])
-        }
-
-
-
-        //ARROWS
-        //takes two nodes and the svg element
-        function connectNodesByArrow(nodeFrom, nodeTo, svg) {
-            //change markerSize to change the marker size
-            const markerSize = 8;
-
-            const refX = markerSize /12 * 11;
-            const refY = markerSize / 2;
-
-            const x = d3.scaleLinear()
-            .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
-            .range([0, width]);       // This is the corresponding value I want in Pixel
-
-             // X scale and Axis
-             const y = d3.scaleLinear()
-             .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
-             .range([height, 0]);       // This is the corresponding value I want in Pixel
-
-            //define arrowHead
-            svg.append("svg:defs").append("svg:marker")
-                .attr("id", "arrowHead")
-                .attr("refX", refX)
-                .attr("refY", refY)
-                .attr("markerWidth", markerSize)
-                .attr("markerHeight", markerSize )
-                .attr("orient", "auto")
-                .append("path")
-                //scale graphic according to markerSize - DO NOT EDIT
-                .attr("d", `M${markerSize/6},${markerSize/6} L${markerSize/6*5},${markerSize/6*3} L${markerSize/6},${markerSize/6*5} L${markerSize/6*3},${markerSize/6*3} L${markerSize/6},${markerSize/6}`)
-                .style("stroke", "black");
-
-            //calculate arrowCoordinates
-            var normedDirVector = calculateNormedDirectionVector(nodeFrom, nodeTo)
-            var arrowCoords = transformCoordsToCircleOutline(nodeFrom, nodeTo, normedDirVector)
-
-            console.log(normedDirVector)
-            console.log(arrowCoords)
-
-            //create line with arrow
-            var arrow = svg.append("line")
-                .attr("x1", x(arrowCoords.x1))
-                .attr("y1", y(arrowCoords.y1))
-                .attr("x2", x(arrowCoords.x2))
-                .attr("y2", y(arrowCoords.y2))
-                .attr("stroke", "black")
-                .attr("stroke-width", 2)
-                .attr("marker-end", "url(#arrowHead)")
-
-            //create arrow for animation
-            var arrowAnimation = svg.append("line")
-            .attr("marker-end", "url(#arrowHead)")
-
-            var animationCoords = {
-                x1:arrowCoords.x1,
-                y1:arrowCoords.y1,
-                x2start:arrowCoords.x1 + normedDirVector.x * 1.5,
-                y2start:arrowCoords.y1 + normedDirVector.y *1.5,
-                x2end:arrowCoords.x2,
-                y2end:arrowCoords.y2
-            } 
-
-
-            repeatedArrowAnimation();
-            //start and repeat the animation
-            function repeatedArrowAnimation() {
-                arrowAnimation.
-                attr("x1", x(animationCoords.x1))
-                .attr("y1", y(animationCoords.y1))
-                .attr("x2", x(animationCoords.x2start))
-                .attr("y2", y(animationCoords.y2start))
-                .attr("stroke", "black")
-                .attr("stroke-width", 2)
-                .transition()
-                //.ease(d3.easeQuadOut)
-                .duration(2000)
-                .attr("x2", x(animationCoords.x2end))
-                .attr("y2", y(animationCoords.y2end))
-                .on("end", repeatedArrowAnimation)
-            }
-                
-        }
-
-        //takes two nodes and returns Directional Vector from x1 to x2 with {x, y} that has the length of 1 
-        function calculateNormedDirectionVector(nodeFrom, nodeTo) {
-            //AB = - A + B
-            var dirVector = {
-                x: - nodeFrom.x + nodeTo.x,
-                y: - nodeFrom.y + nodeTo.y
-            }
-
-            var lengthOfVector = Math.sqrt(Math.pow(dirVector.x, 2) + Math.pow(dirVector.y, 2));
-
-            //bring vector to length of 1
-            normedDirVector = {
-                x: dirVector.x / lengthOfVector,
-                y: dirVector.y / lengthOfVector
-            }
-            return normedDirVector;
-        }
-
-        //takes two nodes and the dirVector with {x,y} and returns the new arrow start and end coords as object {x1,y1,x2,y2}
-        function transformCoordsToCircleOutline(nodeFrom, nodeTo, normedDirVector) {
-            //scale normed DirVector according to radius of nodes
-            var dirVector = {
-                x: normedDirVector.x * dot_radius,
-                y: normedDirVector.y * dot_radius
-            };
-            return {
-                x1: nodeFrom.x + dirVector.x,
-                y1: nodeFrom.y + dirVector.y,
-                x2: nodeTo.x - dirVector.x,
-                y2: nodeTo.y - dirVector.y
-            }
         }
     </script>
 </body>
