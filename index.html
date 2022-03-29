@@ -45,10 +45,9 @@
                         <p class="card-text">Lade eine Datei hoch, um hier den Log zu verfolgen</p>
                         </div>
                     </div>
-                    <!--Buttons for Log Navigation-->
+                    <!--Slider for Log Navigation-->
                     <div style="text-align: center; margin-top: 20px;">
-                        <button type="button" id="previousDataBtn" style="visibility:hidden" class="btn btn-outline-primary" onclick="previousData()">Previous</button>
-                        <button type="button" id="nextDataBtn" style="visibility:hidden" class="btn btn-outline-primary" onclick="nextData()">Next</button>
+                        <div id="dataRagenSlider"></div>
                     </div>
                 </div>
             </div>
@@ -225,26 +224,11 @@
             document.getElementById("visualization").innerHTML = "";
         }
 
-        function nextData() {
-            console.log("nextData")
-            if(testdata.length != currentState -1){
-                d3.select(`#logElement${currentState}`).style("color", "black").style("font-weight", "normal");
-                currentState++;
-                d3.select(`#logElement${currentState}`).style("color", "green").style("font-weight", "700");
-
-                //here switch case if testdata[currentState].type === RREQ than function ...
-            }
-        }
-
-        function previousData() {
-            console.log("previousData")
-            if(currentState != 0){
-                d3.select(`#logElement${currentState}`).style("color", "black").style("font-weight", "normal");
-                currentState--;
-                d3.select(`#logElement${currentState}`).style("color", "green").style("font-weight", "700");
-
-                //here switch case if testdata[currentState].type === RREQ than function ...
-            }
+        function changeState(d){
+            d3.select(`#logElement${currentState}`).style("color", "black").style("font-weight", "normal");
+            currentState = d;
+            d3.select(`#logElement${currentState}`).style("color", "green").style("font-weight", "700");
+            //here switch case if testdata[currentState].type === RREQ than function ...
         }
 
         var data = []
@@ -283,9 +267,8 @@
                 d3.select("#dataLog").append("div").classed("card-body", true).html(html);
                 //coloring current state green
                 d3.select(`#logElement${currentState}`).style("color", "green").style("font-weight", "700");
-                //activating data navigation buttons
-                d3.select("#nextDataBtn").style("visibility", "visible");
-                d3.select("#previousDataBtn").style("visibility", "visible");
+
+                document.getElementById("dataRagenSlider").innerHTML = `<input type="range" class="form-range" min="0" max="${parsed.length-1}" value=${currentState} step="1" oninput="changeState(this.value)" id="customRange3">`;
             });
 
             reader.readAsText(this.files[0])
