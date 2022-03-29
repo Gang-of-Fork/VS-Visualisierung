@@ -30,10 +30,27 @@
                 </div>
             </div>
 
-            <div id="nodeInfo" class="card" style="width: 18rem;">
-                <div id="initNodeInfo" class="card-body">
-                  <h5 class="card-title">Node Info</h5>
-                  <p class="card-text">Selektiere eine Node um weitere Informationen zu erhalten</p>
+            <div class="row">
+                <div class="col">
+                    <div id="nodeInfo" class="card" style="width: 18rem;">
+                        <div id="initNodeInfo" class="card-body">
+                        <h5 class="card-title">Node Info</h5>
+                        <p class="card-text">Selektiere eine Node um weitere Informationen zu erhalten</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div id="dataLog" class="card" style="width: 18rem;">
+                        <div id="initDataLog" class="card-body">
+                        <h5 class="card-title">Daten Log</h5>
+                        <p class="card-text">Lade eine Datei hoch, um hier den Log zu verfolgen</p>
+                        </div>
+                    </div>
+                    <!--Slider for Log Navigation-->
+                    <div style="text-align: center; margin-top: 20px;">
+                        <div id="dataRagenSlider"></div>
+                    </div>
+
                 </div>
               </div>
         </div>
@@ -203,6 +220,7 @@
             document.getElementById("visualization").innerHTML = "";
         }
 
+
         function rreqViz(data){
             //color sending, receiving_discarding and receiving_processing
             d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#5d8e91");
@@ -214,6 +232,14 @@
             
             console.log(data.actions.sending);
         };
+
+
+        function changeState(d){
+            d3.select(`#logElement${currentState}`).style("color", "black").style("font-weight", "normal");
+            currentState = d;
+            d3.select(`#logElement${currentState}`).style("color", "green").style("font-weight", "700");
+            //here switch case if testdata[currentState].type === RREQ than function ...
+        }
 
 
         var data = []
@@ -247,6 +273,16 @@
                 resetViz();
                 initViz(init.nodes);
                 rreqViz(rreq);
+                let html = `<h5 class="card-title">Daten Log</h5>`;
+                for(x in parsed){
+                    html += `<span id="logElement${x}">${x}: ${parsed[x].type}<br/></span>`;
+                }
+                d3.select("#dataLog").append("div").classed("card-body", true).html(html);
+                //coloring current state green
+                d3.select(`#logElement${currentState}`).style("color", "green").style("font-weight", "700");
+
+                document.getElementById("dataRagenSlider").innerHTML = `<input type="range" class="form-range" min="0" max="${parsed.length-1}" value=${currentState} step="1" oninput="changeState(this.value)" id="customRange3">`;
+
             });
 
             reader.readAsText(this.files[0])
