@@ -46,8 +46,10 @@
                         </div>
                     </div>
                     <!--Buttons for Log Navigation-->
-                    <button type="button" style="visibility:hidden" class="btn btn-outline-secondary">Previous</button>
-                    <button type="button" style="visibility:hidden" class="btn btn-outline-primary">Next</button>
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button type="button" id="previousDataBtn" style="visibility:hidden" class="btn btn-outline-primary" onclick="previousData()">Previous</button>
+                        <button type="button" id="nextDataBtn" style="visibility:hidden" class="btn btn-outline-primary" onclick="nextData()">Next</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -78,7 +80,8 @@
 
     <!-- Custom D3.js code -->
     <script>
-        const currentState = 0;
+        var currentState = 0;
+        var testdata; //will be assigned if data is read
 
         function initViz(data) {
             // set the dimensions and margins of the graph
@@ -222,8 +225,27 @@
             document.getElementById("visualization").innerHTML = "";
         }
 
+        function nextData() {
+            console.log("nextData")
+            if(testdata.length != currentState -1){
+                d3.select(`#logElement${currentState}`).style("color", "black").style("font-weight", "normal");
+                currentState++;
+                d3.select(`#logElement${currentState}`).style("color", "green").style("font-weight", "700");
 
+                //here switch case if testdata[currentState].type === RREQ than function ...
+            }
+        }
 
+        function previousData() {
+            console.log("previousData")
+            if(currentState != 0){
+                d3.select(`#logElement${currentState}`).style("color", "black").style("font-weight", "normal");
+                currentState--;
+                d3.select(`#logElement${currentState}`).style("color", "green").style("font-weight", "700");
+
+                //here switch case if testdata[currentState].type === RREQ than function ...
+            }
+        }
 
         var data = []
 
@@ -243,11 +265,9 @@
                 d3.select("#initDataLog").remove()
 
                 const parsed = JSON.parse(event.target.result);
-                console.log(parsed);
+                testdata = parsed;
 
                 const init = parsed.filter(d => d.type == "INIT")[0];
-
-                console.log(init);
 
                 //set config
                 document.getElementById("numOfNodes").innerHTML = init.nodes.length;
@@ -263,7 +283,9 @@
                 d3.select("#dataLog").append("div").classed("card-body", true).html(html);
                 //coloring current state green
                 d3.select(`#logElement${currentState}`).style("color", "green").style("font-weight", "700");
-
+                //activating data navigation buttons
+                d3.select("#nextDataBtn").style("visibility", "visible");
+                d3.select("#previousDataBtn").style("visibility", "visible");
             });
 
             reader.readAsText(this.files[0])
