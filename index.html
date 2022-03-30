@@ -95,7 +95,8 @@
 
         const label_size = rScale(dot_radius) * 0.9;
 
-            function initViz(data) {
+
+        function initViz(data) {
 
             const nodeInfo = d3.select("#nodeInfo")
                 .append("div")
@@ -275,25 +276,24 @@
         }
 
         function rtu(data){
+            const pulse = function () {
+                var circle = d3.select("#vis_svg").select(`#nodeCircle${data.table_update.node}`);
+                console.log(circle);
+                (function repeat() {
+                    circle = circle.transition()
+                        .duration(2000)
+                        .attr("stroke-width", 1.25)
+                        .attr("r", rScale(dot_radius))
+                        .transition()
+                        .duration(2000)
+                        .attr('stroke-width', 1.25)
+                        .attr("r", rScale(dot_radius + 8.75))
+                        .on("end", repeat);
+                })();
+            }
             console.log(data.table_update);   
-
-
-            function pulse() {
-			var circle = svg.select("circle");
-			(function repeat() {
-				circle = circle.transition()
-					.duration(2000)
-					.attr("stroke-width", 20)
-					.attr("r", 10)
-					.transition()
-					.duration(2000)
-					.attr('stroke-width', 0.5)
-					.attr("r", 200)
-					.ease('sine')
-					.each("end", repeat);
-			    })();
-		    }
-            //not implemented yet
+            d3.select(`#nodeCircle${data.table_update.node}`).style("stroke","#0d6efd").each(pulse);
+            d3.select(`#nodeCircle${data.table_update.destination}`).style("stroke","#0d6efd");
         }
 
         function data(data){
@@ -352,12 +352,12 @@
                 case "DATA":
                     resetViz();
                     initViz(testdata[currentState].nodes);
-                    data(testdata[currentState].nodes);
+                    data(testdata[currentState]);
                     break;
                 case "RTU":
                     resetViz();
                     initViz(testdata[currentState].nodes);
-                    rtu(testdata[currentState].nodes);
+                    rtu(testdata[currentState]);
                     break;
                 default:
                     break;
