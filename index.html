@@ -81,7 +81,11 @@
 
     <!-- Custom D3.js code -->
     <script>
+        var currentState = 0;
+        var testdata;
+
         function initViz(data) {
+            console.log(data);
             // set the dimensions and margins of the graph
             const margin = { top: 10, right: 40, bottom: 30, left: 30 };
             const width = 800 - margin.left - margin.right;
@@ -221,16 +225,19 @@
         }
 
 
-        function rreqViz(data){
+        function rreq(data){
+            console.log(data);
             //color sending, receiving_discarding and receiving_processing
-            d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#5d8e91");
+            d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "blue");
             for(let i = 0; i < data.actions.receiving_discarding.length; i++){
-                d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "#757575");
+                d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "red");
             }
-            d3.select(`#nodeCircle${data.actions.receiving_processing}`).attr("fill", "#82e2ff");
-
-            
+            d3.select(`#nodeCircle${data.actions.receiving_processing}`).attr("fill", "green");
         };
+
+        function rres(data){
+            console.log(data);
+        }
 
 
         function changeState(d){
@@ -238,6 +245,26 @@
             currentState = d;
             d3.select(`#logElement${currentState}`).style("color", "green").style("font-weight", "700");
             //here switch case if testdata[currentState].type === RREQ than function ...
+            switch (testdata[currentState].type){
+                case "RREQ":
+                    resetViz();
+                    initViz(testdata[currentState].nodes);
+                    rreq(testdata[currentState]);
+                    break;
+                case "RRES":
+                    resetViz();
+                    initViz(testdata[currentState].nodes);
+                    rres(testdata[currentState]);
+                    break;
+                case "INIT":
+                    resetViz();
+                    initViz(testdata[currentState].nodes);
+                    break;
+                default:
+                    break;
+                
+                    
+            }
         }
 
 
@@ -256,13 +283,9 @@
 
             reader.addEventListener('load', (event) => {
                 const parsed = JSON.parse(event.target.result);
-                console.log(parsed);
+                testdata = parsed;
 
                 const init = parsed.filter(d => d.type == "INIT")[0];
-                const rreq = parsed.filter(d => d.type == "RREQ")[0];
-
-                console.log(rreq);
-                console.log(init);
 
                 //set config
                 document.getElementById("numOfNodes").innerHTML = init.nodes.length;
@@ -271,7 +294,7 @@
 
                 resetViz();
                 initViz(init.nodes);
-                rreqViz(rreq);
+                
                 let html = `<h5 class="card-title">Daten Log</h5>`;
                 for(x in parsed){
                     html += `<span id="logElement${x}">${x}: ${parsed[x].type}<br/></span>`;
