@@ -97,12 +97,25 @@
 
             function initViz(data) {
 
+            const nodeInfo = d3.select("#nodeInfo")
+                .append("div")
+                .classed("card-body", true)
+                .style("position", "absolute")
+                .style("visibility", "hidden")
+                .text("I'm a Node Info");
+
+
             //reset function for later selection
             const resetSelection = function () {
+                console.log("reset");
                 d3.selectAll("circle").attr("stroke", "black");
                 //remove card info
                 d3.select("#initNodeInfo").remove();
-                return nodeInfo 
+                d3.select("#specificNodeInfo").remove();
+                console.log(nodeInfo);
+                return d3.select("#nodeInfo") 
+                    .append("div")
+                    .classed("card-body", true)
                     .attr("id", "initNodeInfo")
                     .style("visibility", "visible")
                     .style("position", "relative")
@@ -150,13 +163,6 @@
                 .style("z-index", "900")
                 .text("I'm a circle!");
 
-            const nodeInfo = d3.select("#nodeInfo")
-                .append("div")
-                .classed("card-body", true)
-                .style("position", "absolute")
-                .style("visibility", "hidden")
-                .text("I'm a Node Info");
-
             //define Node-Events
             const mouseover = function (d) {
                 d3.select(this).style("cursor", "pointer");
@@ -179,6 +185,7 @@
                 event.stopPropagation();
                 //remove card info
                 d3.select("#initNodeInfo").remove();
+                d3.select("#specificNodeInfo").remove();
                 //reset color of all nodes in range
                 d3.selectAll("circle").attr("stroke", "black");
                 //change color of nodes in range
@@ -196,7 +203,9 @@
                 if(d.inRange.length > 0){
                     html += `In Reichweite: ${d.inRange}</p>`
                 }
-                return nodeInfo
+                return d3.select("#nodeInfo") 
+                    .append("div")
+                    .classed("card-body", true)
                     .attr("id", "specificNodeInfo") 
                     .style("visibility", "visible")
                     .style("position", "relative")
