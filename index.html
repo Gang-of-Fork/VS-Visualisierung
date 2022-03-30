@@ -103,6 +103,7 @@
                 //remove card info
                 d3.select("#initNodeInfo").remove();
                 return nodeInfo 
+                    .attr("id", "initNodeInfo")
                     .style("visibility", "visible")
                     .style("position", "relative")
                     .html(`<h5 class="card-title">Node Info</h5>
@@ -194,7 +195,8 @@
                 if(d.inRange.length > 0){
                     html += `In Reichweite: ${d.inRange}</p>`
                 }
-                return nodeInfo 
+                return nodeInfo
+                    .attr("id", "specificNodeInfo") 
                     .style("visibility", "visible")
                     .style("position", "relative")
                     .html(html);
@@ -218,14 +220,18 @@
                 .on("mouseleave", mouseleave)
                 .on("click", click);
 
-                const texts = elemEnter
+            const texts = elemEnter
                 .append("text")
                 .attr("id", function(d) { return "nodeText" + d.id })
                 .attr("x", function (d) { return x(d.x) })
                 .attr("y", function (d) { return y(d.y) + 0.4 * label_size })
                 .attr('font-size', label_size)
                 .attr("text-anchor", "middle")
-                .text(function (d) { return "" + d.id });
+                .text(function (d) { return "" + d.id })
+                .on("mouseover", mouseover)
+                .on("mousemove", mousemove)
+                .on("mouseleave", mouseleave)
+                .on("click", click);
         }
 
         function resetViz() {
@@ -236,14 +242,12 @@
 
         function rreq(data){
             //color sending, receiving_discarding and receiving_processing
-            d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#5d8e91");
+            d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "blue");
             for(let i = 0; i < data.actions.receiving_discarding.length; i++){
-                d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "#757575");
+                d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "red");
             }
-            d3.select(`#nodeCircle${data.actions.receiving_processing}`).attr("fill", "#82e2ff");
-
-            
-        };
+            d3.select(`#nodeCircle${data.actions.receiving_processing}`).attr("fill", "green");
+        }
 
         function rres(data){
 
@@ -251,6 +255,18 @@
 
 
         function changeState(d){
+            d3.select("#specificNodeInfo").remove();
+            d3.select("#initNodeInfo").remove();
+            d3.select("#nodeInfo")
+                .append("div")
+                .classed("card-body", true)
+                .attr("id", "initNodeInfo")
+                .style("position", "absolute")
+                .style("visibility", "hidden")
+                .style("visibility", "visible")
+                .style("position", "relative")
+                .html(`<h5 class="card-title">Node Info</h5>
+                  <p class="card-text">Selektiere eine Node um weitere Informationen zu erhalten</p>`);
             d3.select(`#logElement${currentState}`).style("color", "black").style("font-weight", "normal");
             currentState = d;
             d3.select(`#logElement${currentState}`).style("color", "green").style("font-weight", "700");
@@ -271,8 +287,6 @@
                     break;
                 default:
                     break;
-                
-                    
             }
         }
 
