@@ -32,7 +32,7 @@
 
             <div class="row">
                 <div class="col">
-                    <div id="nodeInfo" class="card" style="width: 18rem;">
+                    <div id="nodeInfo" class="card" style="width: 100%;">
                         <div id="initNodeInfo" class="card-body">
                         <h5 class="card-title">Node Info</h5>
                         <p class="card-text">Selektiere eine Node um weitere Informationen zu erhalten</p>
@@ -40,7 +40,7 @@
                     </div>
                 </div>
                 <div class="col">
-                    <div id="dataLog" class="card" style="width: 18rem;">
+                    <div id="dataLog" class="card" style="width: 100%;">
                         <div id="initDataLog" class="card-body">
                         <h5 class="card-title">Daten Log</h5>
                         <p class="card-text">Lade eine Datei hoch, um hier den Log zu verfolgen</p>
@@ -242,17 +242,23 @@
 
 
         function rreq(data){
-            //color sending, receiving_discarding and receiving_processing
             d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "blue");
             for(let i = 0; i < data.actions.receiving_discarding.length; i++){
                 d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "red");
+                connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_discarding[i] - 1], d3.select("#vis_svg"));
             }
             d3.select(`#nodeCircle${data.actions.receiving_processing}`).attr("fill", "green");
-            connectNodesByArrow(data.nodes[0], data.nodes[1], d3.select("#vis_svg"))
+            connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_processing - 1], d3.select("#vis_svg"));
         }
 
         function rres(data){
-
+            d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "blue");
+            for(let i = 0; i < data.actions.receiving_discarding.length; i++){
+                d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "red");
+                connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_discarding[i] - 1], d3.select("#vis_svg"));
+            }
+            d3.select(`#nodeCircle${data.actions.receiving_processing}`).attr("fill", "green");
+            connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_processing - 1], d3.select("#vis_svg"));
         }
 
 
