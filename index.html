@@ -329,7 +329,13 @@
                     break;
                 case "DATA":
                     resetViz();
+                    initViz(testdata[currentState].nodes);
                     data(testdata[currentState].nodes);
+                    break;
+                case "RTU":
+                    resetViz();
+                    initViz(testdata[currentState].nodes);
+                    rtu(testdata[currentState].nodes);
                     break;
                 default:
                     break;
