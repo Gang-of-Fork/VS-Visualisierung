@@ -256,8 +256,10 @@
                 d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "red");
                 connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_discarding[i] - 1], d3.select("#vis_svg"));
             }
-            d3.select(`#nodeCircle${data.actions.receiving_processing}`).attr("fill", "green");
-            connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_processing - 1], d3.select("#vis_svg"));
+            for(let i = 0; i < data.actions.receiving_processing.length; i++){
+                d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "green");
+                connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_processing[i] - 1], d3.select("#vis_svg"));
+            }
         }
 
         function rres(data){
@@ -266,11 +268,31 @@
                 d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "red");
                 connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_discarding[i] - 1], d3.select("#vis_svg"));
             }
-            d3.select(`#nodeCircle${data.actions.receiving_processing}`).attr("fill", "green");
-            connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_processing - 1], d3.select("#vis_svg"));
+            for(let i = 0; i < data.actions.receiving_processing.length; i++){
+                d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "green");
+                connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_processing[i] - 1], d3.select("#vis_svg"));
+            }
         }
 
         function rtu(data){
+            console.log(data.table_update);   
+
+
+            function pulse() {
+			var circle = svg.select("circle");
+			(function repeat() {
+				circle = circle.transition()
+					.duration(2000)
+					.attr("stroke-width", 20)
+					.attr("r", 10)
+					.transition()
+					.duration(2000)
+					.attr('stroke-width', 0.5)
+					.attr("r", 200)
+					.ease('sine')
+					.each("end", repeat);
+			    })();
+		    }
             //not implemented yet
         }
 
@@ -467,7 +489,7 @@
                 .attr("stroke", "black")
                 .attr("stroke-width", 2)
                 .transition()
-                //.ease(d3.easeQuadOut)
+                .ease(d3.easeLinear)
                 .duration(2000)
                 .attr("x2", x(animationCoords.x2end))
                 .attr("y2", y(animationCoords.y2end))
