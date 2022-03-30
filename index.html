@@ -337,10 +337,15 @@
 
                 resetViz();
                 initViz(init.nodes);
-                let html = `<h5 class="card-title">Daten Log</h5>`;
+                let html = `<h5 class="card-title">Daten Log</h5><div class="row"><div class="col">`;
+
                 for(x in parsed){
                     html += `<span id="logElement${x}">${x}: ${parsed[x].type}<br/></span>`;
+                    if(~~(parsed.length / 2)-1 == x){
+                        html += "</div><div class='col'>";
+                    }
                 }
+                html += "</div></div>";
                 d3.select("#dataLog").append("div").classed("card-body", true).html(html);
                 //coloring current state green
                 d3.select(`#logElement${currentState}`).style("color", "green").style("font-weight", "700");
