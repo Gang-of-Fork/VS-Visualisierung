@@ -75,7 +75,7 @@
 
     <!-- Configuration constants -->
     <script>
-        const dot_radius = 2;
+        const dot_radius = 1.25;
     </script>
 
     <!-- Custom D3.js code -->
@@ -119,6 +119,7 @@
                 .attr("height", height + margin.top + margin.bottom)
                 // translate this svg element to leave some margin.
                 .append("g")
+                .attr("id", "vis_svg")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
             // X scale and Axis
@@ -247,6 +248,7 @@
                 d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "red");
             }
             d3.select(`#nodeCircle${data.actions.receiving_processing}`).attr("fill", "green");
+            connectNodesByArrow(data.nodes[0], data.nodes[1], d3.select("#vis_svg"))
         }
 
         function rres(data){
@@ -339,8 +341,8 @@
          //ARROWS
         //takes two nodes and the svg element
         function connectNodesByArrow(nodeFrom, nodeTo, svg) {
-            //change markerSize to change the marker size
-            const markerSize = 8;
+            //change markerSize to change the marker size lol
+            const markerSize = 6;
 
             const refX = markerSize /12 * 11;
             const refY = markerSize / 2;
@@ -391,8 +393,8 @@
             var animationCoords = {
                 x1:arrowCoords.x1,
                 y1:arrowCoords.y1,
-                x2start:arrowCoords.x1 + normedDirVector.x * 1.5,
-                y2start:arrowCoords.y1 + normedDirVector.y *1.5,
+                x2start:arrowCoords.x1 + normedDirVector.x * 1.2,
+                y2start:arrowCoords.y1 + normedDirVector.y * 1.2,
                 x2end:arrowCoords.x2,
                 y2end:arrowCoords.y2
             } 
