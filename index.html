@@ -14,8 +14,8 @@
 </head>
 
 <body>
-    <div>
-        <h3>X-Size: <span id="xsize"></span> Y-Size: <span id="ysize"></span> Number of Nodes: <span
+    <div id="title" style="visibility: hidden; position: absolute;">
+        <h3>X-Größe: <span id="xsize"></span> Y-Größe: <span id="ysize"></span> Anzahl der Nodes: <span
                 id="numOfNodes"></span></h3>
     </div>
     <div class="row">
@@ -331,9 +331,10 @@
 
 
                 //set config
+                d3.select("#title").style("visibility", "visible").style("position", "relative");
                 document.getElementById("numOfNodes").innerHTML = init.nodes.length;
-                document.getElementById("xsize").innerHTML = init.xsize;
-                document.getElementById("ysize").innerHTML = init.ysize;
+                document.getElementById("xsize").innerHTML = init.xsize + " |";
+                document.getElementById("ysize").innerHTML = init.ysize + " |";
 
                 resetViz();
                 initViz(init.nodes);
