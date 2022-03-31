@@ -128,6 +128,7 @@
             const resetSelection = function () {
                 console.log("reset");
                 d3.selectAll("circle").attr("stroke", "black");
+                d3.selectAll("circle").attr("stroke-width", "1");
                 //remove card info
                 d3.select("#initNodeInfo").remove();
                 d3.select("#specificNodeInfo").remove();
@@ -206,13 +207,26 @@
                 d3.select("#initNodeInfo").remove();
                 d3.select("#specificNodeInfo").remove();
                 //reset color of all nodes in range
-                d3.selectAll("circle").attr("stroke", "black");
+                        //d3.selectAll("circle").attr("stroke", "black");
+                d3.selectAll("circle").attr("stroke-width", "1");
                 //change color of nodes in range
-                d3.select(`#nodeCircle${d.id}`).attr("stroke", "orange");
-                for(let x of d.inRange){
-                    d3.select(`#nodeCircle${x}`).attr("stroke", "blue");
-                }
+                        //d3.select(`#nodeCircle${d.id}`).attr("stroke", "orange");
+                d3.select(`#nodeCircle${d.id}`).attr("stroke-width", "3");
+                        //for(let x of d.inRange){
+                            //d3.select(`#nodeCircle${x}`).attr("stroke", "blue");
+                        //}
                 //add node info in card on right side
+                var rangeCircleX = d.x;
+                var rangeCircleY = d.y;
+                console.log(d.cx);
+
+                elemEnter
+                    .append('circle')
+                    .attr('cx', rangeCircleX)
+                    .attr('cy', rangeCircleY)
+                    .attr("r", 40)
+                    .attr('stroke', 'red');
+
                 let html = `<h5 class="card-title">Node Info</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Node ID: ${d.id}</h6>
                         <p class="card-text">X: ${d.x}, Y: ${d.y} </br>`
@@ -270,23 +284,23 @@
 
 
         function rreq(data){
-            d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "blue");
+            d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#bce6eb");
             for(let i = 0; i < data.actions.receiving_discarding.length; i++){
-                d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "red");
+                d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "#ff8585");
             }
             for(let i = 0; i < data.actions.receiving_processing.length; i++){
-                d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "green");
+                d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "#d2f5e3");
                 connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_processing[i] - 1], d3.select("#vis_svg"));
             }
         }
 
         function rres(data){
-            d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "blue");
+            d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#bce6eb");
             for(let i = 0; i < data.actions.receiving_discarding.length; i++){
-                d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "red");
+                d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "#ff8585");
             }
             for(let i = 0; i < data.actions.receiving_processing.length; i++){
-                d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "green");
+                d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "#d2f5e3");
                 connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_processing[i] - 1], d3.select("#vis_svg"));
             }
         }
