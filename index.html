@@ -456,7 +456,7 @@
 
          //ARROWS
         //takes two nodes and the svg element and a boolean withAnimation
-        function connectNodesByArrow(nodeFrom, nodeTo, svg, withAnimation = true) {
+        function connectNodesByArrow(nodeFrom, nodeTo, svg, withAnimation = true, withDottedLine = false) {
             //change markerSize to change the marker size lol
             const markerSize = 6;
 
@@ -493,7 +493,7 @@
             console.log(arrowCoords)
 
             //create line with arrow
-            var arrow = svg.append("line")
+            var arrowLine = svg.append("line")
                 .attr("x1", x(arrowCoords.x1))
                 .attr("y1", y(arrowCoords.y1))
                 .attr("x2", x(arrowCoords.x2))
@@ -501,6 +501,12 @@
                 .attr("stroke", "black")
                 .attr("stroke-width", 2)
                 .attr("marker-end", "url(#arrowHead)")
+
+            if(withDottedLine) {
+                arrowLine
+                .attr("stroke-dasharray","5,5")
+                .attr("d","M5 40 l215 0")
+            }
 
             //create arrow for animation
             var arrowAnimation = svg.append("line")
