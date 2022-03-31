@@ -68,9 +68,27 @@
     <script src="https://d3js.org/d3.v4.js"></script>
 
     <style>
-        body {
-            margin: 40px
-        }
+
+    body {
+        margin: 40px;
+    }
+    
+    @-webkit-keyframes pulse 
+    {       
+      0% {-webkit-transform: scale(1.0); opacity: 1;}
+      100% {-webkit-transform: scale(1.0); opacity: 0;}
+    }
+    
+    .pulse
+    {
+      /* Giving Animation Function */
+      -webkit-animation: pulse 2s linear infinite;
+    }
+    
+    .shadow {
+        -webkit-filter: drop-shadow( 0px 0px 5px white );
+                filter: drop-shadow( 0px 0px 5px #000 ); /* Same syntax as box-shadow */
+    }
     </style>
 
     <!-- Configuration constants -->
@@ -255,7 +273,6 @@
             d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "blue");
             for(let i = 0; i < data.actions.receiving_discarding.length; i++){
                 d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "red");
-                connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_discarding[i] - 1], d3.select("#vis_svg"));
             }
             for(let i = 0; i < data.actions.receiving_processing.length; i++){
                 d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "green");
@@ -267,7 +284,6 @@
             d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "blue");
             for(let i = 0; i < data.actions.receiving_discarding.length; i++){
                 d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "red");
-                connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_discarding[i] - 1], d3.select("#vis_svg"));
             }
             for(let i = 0; i < data.actions.receiving_processing.length; i++){
                 d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "green");
@@ -277,11 +293,11 @@
 
         function rtu(data){
             const pulse = function () {
-                var circle = d3.select("#vis_svg").select(`#nodeCircle${data.table_update.node}`);
+                var circle = d3.select("#pulseCircle");
                 console.log(circle);
                 (function repeat() {
                     circle = circle.transition()
-                        .duration(2000)
+                        .duration(0)
                         .attr("stroke-width", 1.25)
                         .attr("r", rScale(dot_radius))
                         .transition()
@@ -291,8 +307,30 @@
                         .on("end", repeat);
                 })();
             }
+            var node = d3.select(`#nodeCircle${data.table_update.node}`);
+            console.log(node._groups[0][0].attributes);
+            var cx = node._groups[0][0].attributes.cx.value;
+            var cy = node._groups[0][0].attributes.cy.value;
+
+            d3.select("#vis_svg").append("circle")
+                .attr("id", "pulseCircle")
+                .attr("cx", cx)
+                .attr("cy", cy)
+                .attr("r", rScale(dot_radius + 8.75))
+                .attr("fill", "#0d6efd")
+                .attr("stroke", "#0d6efd")
+                .style("z-index", "500")
+                .classed("pulse", true)
+                .each(pulse);
+
+            node.style("z-index", "600").attr("stroke", "#0d6efd").attr("fill", "white");
+
+            const route = data.table_update.route.split(";");
+            console.log(route);
+            for(let i = 0; i<route.length-1; i++){
+                connectNodesByArrow(data.nodes[route[i] - 1], data.nodes[route[i+1] - 1], d3.select("#vis_svg"));
+            }
             console.log(data.table_update);   
-            d3.select(`#nodeCircle${data.table_update.node}`).style("stroke","#0d6efd").each(pulse);
             d3.select(`#nodeCircle${data.table_update.destination}`).style("stroke","#0d6efd");
         }
 
@@ -399,7 +437,7 @@
 
                 for(x in parsed){
                     html += `<span id="logElement${x}">${x}: ${parsed[x].type}<br/></span>`;
-                    if(~~(parsed.length / 2)-1 == x){
+                    if(~~(parsed.length / 2) == x){
                         html += "</div><div class='col'>";
                     }
                 }
