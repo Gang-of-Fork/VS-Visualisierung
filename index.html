@@ -312,23 +312,23 @@
             var cx = node._groups[0][0].attributes.cx.value;
             var cy = node._groups[0][0].attributes.cy.value;
 
-            d3.select("#vis_svg").append("circle")
+            d3.select("#vis_svg")
+                .insert("circle", "circle")
                 .attr("id", "pulseCircle")
                 .attr("cx", cx)
                 .attr("cy", cy)
                 .attr("r", rScale(dot_radius + 8.75))
                 .attr("fill", "#0d6efd")
                 .attr("stroke", "#0d6efd")
-                .style("z-index", "500")
                 .classed("pulse", true)
                 .each(pulse);
 
-            node.style("z-index", "600").attr("stroke", "#0d6efd").attr("fill", "white");
+            node.attr("stroke", "#0d6efd").attr("fill", "white");
 
             const route = data.table_update.route.split(";");
             console.log(route);
             for(let i = 0; i<route.length-1; i++){
-                connectNodesByArrow(data.nodes[route[i] - 1], data.nodes[route[i+1] - 1], d3.select("#vis_svg"));
+                connectNodesByArrow(data.nodes[route[i] - 1], data.nodes[route[i+1] - 1], d3.select("#vis_svg"), false);
             }
             console.log(data.table_update);   
             d3.select(`#nodeCircle${data.table_update.destination}`).style("stroke","#0d6efd");
