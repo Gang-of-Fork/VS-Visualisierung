@@ -455,8 +455,8 @@
 
 
          //ARROWS
-        //takes two nodes and the svg element
-        function connectNodesByArrow(nodeFrom, nodeTo, svg) {
+        //takes two nodes and the svg element and a boolean withAnimation
+        function connectNodesByArrow(nodeFrom, nodeTo, svg, withAnimation = true) {
             //change markerSize to change the marker size lol
             const markerSize = 6;
 
@@ -515,7 +515,7 @@
                 y2end:arrowCoords.y2
             } 
 
-
+            if(withAnimation) {
             repeatedArrowAnimation();
             //start and repeat the animation
             function repeatedArrowAnimation() {
@@ -533,6 +533,7 @@
                 .attr("y2", y(animationCoords.y2end))
                 .on("end", repeatedArrowAnimation)
             }
+        }
 
         }
 
