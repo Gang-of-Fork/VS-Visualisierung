@@ -331,25 +331,37 @@
             const route = data.table_update.route.split(";");
             console.log(route);
             for(let i = 0; i<route.length-1; i++){
-                connectNodesByArrow(data.nodes[route[i] - 1], data.nodes[route[i+1] - 1], d3.select("#vis_svg"), false);
+                connectNodesByArrow(data.nodes[route[i] - 1], data.nodes[route[i+1] - 1], d3.select("#vis_svg"), false, true);
             }
             console.log(data.table_update);   
             d3.select(`#nodeCircle${data.table_update.destination}`).style("stroke","#0d6efd");
         }
 
         function dataViz(data){
-            d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "blue");
+            d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#bce6eb");
+            const route = data.packet.route.split(";");
+            console.log(route);
+            for(let i = 0; i<route.length-1; i++){
+                connectNodesByArrow(data.nodes[route[i] - 1], data.nodes[route[i+1] - 1], d3.select("#vis_svg"), false, true);
+            }
             for(let i = 0; i < data.actions.receiving_discarding.length; i++){
-                d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "red");
+                d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "#ff8585");
             }
             for(let i = 0; i < data.actions.receiving_processing.length; i++){
-                d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "green");
+                d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "#d2f5e3");
                 connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_processing[i] - 1], d3.select("#vis_svg"));
             }
         }
 
         function ack(data){
-            //not implemented yet
+            d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#bce6eb");
+            for(let i = 0; i < data.actions.receiving_discarding.length; i++){
+                d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "#ff8585");
+            }
+            for(let i = 0; i < data.actions.receiving_processing.length; i++){
+                d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "#d2f5e3");
+                connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_processing[i] - 1], d3.select("#vis_svg"), true, false,  "green");
+            }
         }
 
         function rerr(data){
@@ -467,7 +479,7 @@
 
          //ARROWS
         //takes two nodes and the svg element and a boolean withAnimation
-        function connectNodesByArrow(nodeFrom, nodeTo, svg, withAnimation = true, withDottedLine = false) {
+        function connectNodesByArrow(nodeFrom, nodeTo, svg, withAnimation = true, withDottedLine = false, color = "black") {
             //change markerSize to change the marker size lol
             const markerSize = 6;
 
@@ -494,7 +506,7 @@
                 .append("path")
                 //scale graphic according to markerSize - DO NOT EDIT
                 .attr("d", `M${markerSize/6},${markerSize/6} L${markerSize/6*5},${markerSize/6*3} L${markerSize/6},${markerSize/6*5} L${markerSize/6*3},${markerSize/6*3} L${markerSize/6},${markerSize/6}`)
-                .style("stroke", "black");
+                .style("stroke", color);
 
             //calculate arrowCoordinates
             var normedDirVector = calculateNormedDirectionVector(nodeFrom, nodeTo)
@@ -509,7 +521,7 @@
                 .attr("y1", y(arrowCoords.y1))
                 .attr("x2", x(arrowCoords.x2))
                 .attr("y2", y(arrowCoords.y2))
-                .attr("stroke", "black")
+                .attr("stroke", color)
                 .attr("stroke-width", 2)
                 .attr("marker-end", "url(#arrowHead)")
 
@@ -541,7 +553,7 @@
                 .attr("y1", y(animationCoords.y1))
                 .attr("x2", x(animationCoords.x2start))
                 .attr("y2", y(animationCoords.y2start))
-                .attr("stroke", "black")
+                .attr("stroke", color)
                 .attr("stroke-width", 2)
                 .transition()
                 .ease(d3.easeLinear)
