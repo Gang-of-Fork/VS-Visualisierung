@@ -73,17 +73,6 @@
         margin: 40px;
     }
     
-    @-webkit-keyframes pulse 
-    {       
-      0% {-webkit-transform: scale(1.0); opacity: 1;}
-      100% {-webkit-transform: scale(1.0); opacity: 0;}
-    }
-    
-    .pulse
-    {
-      /* Giving Animation Function */
-      -webkit-animation: pulse 2s linear infinite;
-    }
     
     .shadow {
         -webkit-filter: drop-shadow( 0px 0px 5px white );
@@ -307,13 +296,18 @@
                 console.log(circle);
                 (function repeat() {
                     circle = circle.transition()
+                        //reset pulsing circle to node size
                         .duration(0)
                         .attr("stroke-width", 1.25)
                         .attr("r", rScale(dot_radius))
+                        .style("opacity","1")
+                        //let circle grow and fade the color out
                         .transition()
                         .duration(2000)
+                        //.ease(d3.easeLinear)
                         .attr('stroke-width', 1.25)
                         .attr("r", rScale(dot_radius + 8.75))
+                        .style("opacity","0")
                         .on("end", repeat);
                 })();
             }
@@ -330,7 +324,6 @@
                 .attr("r", rScale(dot_radius + 8.75))
                 .attr("fill", "#0d6efd")
                 .attr("stroke", "#0d6efd")
-                .classed("pulse", true)
                 .each(pulse);
 
             node.attr("stroke", "#0d6efd").attr("fill", "white");
