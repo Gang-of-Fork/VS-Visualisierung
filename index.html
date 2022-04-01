@@ -342,14 +342,14 @@
             const route = data.packet.route.split(";");
             console.log(route);
             for(let i = 0; i<route.length-1; i++){
-                connectNodesByArrow(data.nodes[route[i] - 1], data.nodes[route[i+1] - 1], d3.select("#vis_svg"), false, true);
+                sendMessageBetweenNodes(data.nodes[route[i] - 1], data.nodes[route[i+1] - 1], d3.select("#vis_svg"), false, true);
             }
             for(let i = 0; i < data.actions.receiving_discarding.length; i++){
                 d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "#ff8585");
             }
             for(let i = 0; i < data.actions.receiving_processing.length; i++){
                 d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "#d2f5e3");
-                connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_processing[i] - 1], d3.select("#vis_svg"));
+                sendMessageBetweenNodes(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_processing[i] - 1], d3.select("#vis_svg"));
             }
         }
 
@@ -360,7 +360,7 @@
             }
             for(let i = 0; i < data.actions.receiving_processing.length; i++){
                 d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "#d2f5e3");
-                connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_processing[i] - 1], d3.select("#vis_svg"), true, false,  "green");
+                sendMessageBetweenNodes(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_processing[i] - 1], d3.select("#vis_svg"), true, false,  "green");
             }
         }
 
@@ -565,6 +565,93 @@
         }
 
         }
+
+        //Like connectNodesByArrow but with a datapacket
+        function sendMessageBetweenNodes(nodeFrom, nodeTo, svg, withAnimation = true, withDottedLine = false) {
+            //change markerSize to change the marker size lol
+            const markerSize = 6;
+
+            const refX = markerSize /12 * 11;
+            const refY = markerSize / 2;
+
+            const x = d3.scaleLinear()
+            .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
+            .range([0, width]);       // This is the corresponding value I want in Pixel
+
+             // X scale and Axis
+             const y = d3.scaleLinear()
+             .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
+             .range([height, 0]);       // This is the corresponding value I want in Pixel
+
+            //define arrowHead
+            svg.append("svg:defs").append("svg:marker")
+                .attr("id", "arrow")
+                .attr("refX", refX)
+                .attr("refY", refY)
+                .attr("markerWidth", markerSize)
+                .attr("markerHeight", markerSize )
+                .attr("orient", "auto")
+                .append("circle")
+                .attr("r", rScale(dot_radius + 8.75))
+                .attr("fill", "black")
+                .attr("stroke", "black")
+                
+
+            //calculate arrowCoordinates
+            var normedDirVector = calculateNormedDirectionVector(nodeFrom, nodeTo)
+            var arrowCoords = transformCoordsToCircleOutline(nodeFrom, nodeTo, normedDirVector)
+
+            console.log(normedDirVector)
+            console.log(arrowCoords)
+
+            //create line with arrow
+            var arrowLine = svg.append("line")
+                .attr("x1", x(arrowCoords.x1))
+                .attr("y1", y(arrowCoords.y1))
+                .attr("x2", x(arrowCoords.x2))
+                .attr("y2", y(arrowCoords.y2))
+                .attr("stroke", "black")
+                .attr("stroke-width", 2)
+                .attr("marker-end", "url(#arrowHead)")
+
+            if(withDottedLine) {
+                arrowLine
+                .attr("stroke-dasharray","5,5")
+                .attr("d","M5 40 l215 0")
+            }
+
+            //create arrow for animation
+            var arrowAnimation = svg.append("line")
+            .attr("marker-end", "url(#arrow)")
+
+            var animationCoords = {
+                x1:arrowCoords.x1,
+                y1:arrowCoords.y1,
+                x2start:arrowCoords.x1 + normedDirVector.x * 1.2,
+                y2start:arrowCoords.y1 + normedDirVector.y * 1.2,
+                x2end:arrowCoords.x2,
+                y2end:arrowCoords.y2
+            } 
+
+            if(withAnimation) {
+            repeatedArrowAnimation();
+            //start and repeat the animation
+            function repeatedArrowAnimation() {
+                arrowAnimation.
+                attr("x1", x(animationCoords.x1))
+                .attr("y1", y(animationCoords.y1))
+                .attr("x2", x(animationCoords.x2start))
+                .attr("y2", y(animationCoords.y2start))
+                .attr("stroke", "black")
+                .attr("stroke-width", 2)
+                .transition()
+                .ease(d3.easeLinear)
+                .duration(4000)
+                .attr("x2", x(animationCoords.x2end))
+                .attr("y2", y(animationCoords.y2end))
+                .remove()
+            }
+        }}
 
         //takes two nodes and returns Directional Vector from x1 to x2 with {x, y} that has the length of 1 
         function calculateNormedDirectionVector(nodeFrom, nodeTo) {
