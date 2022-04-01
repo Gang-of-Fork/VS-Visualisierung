@@ -280,23 +280,23 @@
 
 
         function rreq(data){
-            d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "blue");
+            d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#bce6eb");
             for(let i = 0; i < data.actions.receiving_discarding.length; i++){
-                d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "red");
+                d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "#ff8585");
             }
             for(let i = 0; i < data.actions.receiving_processing.length; i++){
-                d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "green");
+                d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "#d2f5e3");
                 connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_processing[i] - 1], d3.select("#vis_svg"));
             }
         }
 
         function rres(data){
-            d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "blue");
+            d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#bce6eb");
             for(let i = 0; i < data.actions.receiving_discarding.length; i++){
-                d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "red");
+                d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "#ff8585");
             }
             for(let i = 0; i < data.actions.receiving_processing.length; i++){
-                d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "green");
+                d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "#d2f5e3");
                 connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_processing[i] - 1], d3.select("#vis_svg"));
             }
         }
