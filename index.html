@@ -82,7 +82,7 @@
 
     <!-- Configuration constants -->
     <script>
-        const dot_radius = 1.25;
+        const dot_radius = 0.75;
     </script>
 
     <!-- Custom D3.js code -->
@@ -275,7 +275,7 @@
             }
             for(let i = 0; i < data.actions.receiving_processing.length; i++){
                 d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "#d2f5e3");
-                connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_processing[i] - 1], d3.select("#vis_svg"));
+                connectNodesByArrow(data.nodes[data.actions.sending ], data.nodes[data.actions.receiving_processing[i] ], d3.select("#vis_svg"));
             }
         }
 
@@ -286,7 +286,7 @@
             }
             for(let i = 0; i < data.actions.receiving_processing.length; i++){
                 d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "#d2f5e3");
-                connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_processing[i] - 1], d3.select("#vis_svg"));
+                connectNodesByArrow(data.nodes[data.actions.sending ], data.nodes[data.actions.receiving_processing[i] ], d3.select("#vis_svg"));
             }
         }
 
@@ -331,7 +331,7 @@
             const route = data.table_update.route.split(";");
             console.log(route);
             for(let i = 0; i<route.length-1; i++){
-                connectNodesByArrow(data.nodes[route[i] - 1], data.nodes[route[i+1] - 1], d3.select("#vis_svg"), false, true);
+                connectNodesByArrow(data.nodes[route[i] ], data.nodes[route[i+1] ], d3.select("#vis_svg"), false, true);
             }
             console.log(data.table_update);   
             d3.select(`#nodeCircle${data.table_update.destination}`).style("stroke","#0d6efd");
@@ -342,14 +342,14 @@
             const route = data.packet.route.split(";");
             console.log(route);
             for(let i = 0; i<route.length-1; i++){
-                connectNodesByArrow(data.nodes[route[i] - 1], data.nodes[route[i+1] - 1], d3.select("#vis_svg"), false, true);
+                connectNodesByArrow(data.nodes[route[i] ], data.nodes[route[i+1] ], d3.select("#vis_svg"), false, true);
             }
             for(let i = 0; i < data.actions.receiving_discarding.length; i++){
                 d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "#ff8585");
             }
             for(let i = 0; i < data.actions.receiving_processing.length; i++){
                 d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "#d2f5e3");
-                connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_processing[i] - 1], d3.select("#vis_svg"));
+                connectNodesByArrow(data.nodes[data.actions.sending ], data.nodes[data.actions.receiving_processing[i] ], d3.select("#vis_svg"));
             }
         }
 
@@ -360,7 +360,7 @@
             }
             for(let i = 0; i < data.actions.receiving_processing.length; i++){
                 d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "#d2f5e3");
-                connectNodesByArrow(data.nodes[data.actions.sending - 1], data.nodes[data.actions.receiving_processing[i] - 1], d3.select("#vis_svg"), true, false,  "green");
+                connectNodesByArrow(data.nodes[data.actions.sending ], data.nodes[data.actions.receiving_processing[i] ], d3.select("#vis_svg"), true, false,  "green");
             }
         }
 
@@ -481,8 +481,12 @@
         //takes two nodes and the svg element and a boolean withAnimation
         function connectNodesByArrow(nodeFrom, nodeTo, svg, withAnimation = true, withDottedLine = false, color = "black") {
             //change markerSize to change the marker size lol
-            const markerSize = 6;
-
+            const markerSizeUnscaled = dot_radius * 0.8;
+            const markerSize = rScale(markerSizeUnscaled);
+            
+            //only draw arrow, if there is enough space for it
+            if(getDistanceBetweenNodes(nodeFrom, nodeTo) <= markerSizeUnscaled + dot_radius*2) return
+            
             const refX = markerSize /12 * 11;
             const refY = markerSize / 2;
 
@@ -522,7 +526,7 @@
                 .attr("x2", x(arrowCoords.x2))
                 .attr("y2", y(arrowCoords.y2))
                 .attr("stroke", color)
-                .attr("stroke-width", 2)
+                .attr("stroke-width", 1.5)
                 .attr("marker-end", "url(#arrowHead)")
 
             if(withDottedLine) {
@@ -538,12 +542,13 @@
             var animationCoords = {
                 x1:arrowCoords.x1,
                 y1:arrowCoords.y1,
-                x2start:arrowCoords.x1 + normedDirVector.x * 1.2,
-                y2start:arrowCoords.y1 + normedDirVector.y * 1.2,
+                x2start:arrowCoords.x1 + normedDirVector.x * markerSizeUnscaled,
+                y2start:arrowCoords.y1 + normedDirVector.y * markerSizeUnscaled,
                 x2end:arrowCoords.x2,
                 y2end:arrowCoords.y2
             } 
 
+            //don't add animation, if there is not enought space
             if(withAnimation) {
             repeatedArrowAnimation();
             //start and repeat the animation
@@ -554,7 +559,7 @@
                 .attr("x2", x(animationCoords.x2start))
                 .attr("y2", y(animationCoords.y2start))
                 .attr("stroke", color)
-                .attr("stroke-width", 2)
+                .attr("stroke-width", 1.5)
                 .transition()
                 .ease(d3.easeLinear)
                 .duration(2000)
@@ -582,6 +587,17 @@
                 y: dirVector.y / lengthOfVector
             }
             return normedDirVector;
+        }
+
+        //takes two nodes and calculates the distance in scaled Units
+        function getDistanceBetweenNodes(nodeFrom, nodeTo) {
+            //AB = - A + B
+            var dirVector = {
+                x: - nodeFrom.x + nodeTo.x,
+                y: - nodeFrom.y + nodeTo.y
+            }
+
+            return lengthOfVector = Math.sqrt(Math.pow(dirVector.x, 2) + Math.pow(dirVector.y, 2));
         }
 
         //takes two nodes and the dirVector with {x,y} and returns the new arrow start and end coords as object {x1,y1,x2,y2}
