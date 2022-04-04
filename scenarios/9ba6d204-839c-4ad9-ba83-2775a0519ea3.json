@@ -1,0 +1,550 @@
+[{
+"xsize": 15,"ysize": 15,
+"type": "INIT",
+"nodes":[ {"x": 3,"y": 15,"id": 0,"routingTable":[],
+"inRange":["2","3"]},
+{"x": 15,"y": 8,"id": 1,"routingTable":[],
+"inRange":["4"]},
+{"x": 6,"y": 13,"id": 2,"routingTable":[],
+"inRange":["0","3","4"]},
+{"x": 1,"y": 14,"id": 3,"routingTable":[],
+"inRange":["0","2"]},
+{"x": 15,"y": 15,"id": 4,"routingTable":[],
+"inRange":["1","2"]} ]},
+{
+"xsize": 15,"ysize": 15,
+"type": "RREQ",
+"nodes":[ {"x": 3,"y": 15,"id": 0,"routingTable":[],
+"inRange":["2","3"]},
+{"x": 15,"y": 8,"id": 1,"routingTable":[],
+"inRange":["4"]},
+{"x": 6,"y": 13,"id": 2,"routingTable":[],
+"inRange":["0","3","4"]},
+{"x": 1,"y": 14,"id": 3,"routingTable":[],
+"inRange":["0","2"]},
+{"x": 15,"y": 15,"id": 4,"routingTable":[],
+"inRange":["1","2"]} ],
+"packet":{
+"id": "92225624-141d-46ae-8eb4-8e5b2266310a",
+"dest": "2",
+"sender": "1",
+"source": "1",
+"route": "1",
+"type": "RREQ"
+}
+,
+"actions":{
+"sending": "1",
+"receiving_processing":
+["4"],
+"receiving_discarding":
+[]
+}
+},
+{
+"xsize": 15,"ysize": 15,
+"type": "RREQ",
+"nodes":[ {"x": 3,"y": 15,"id": 0,"routingTable":[],
+"inRange":["2","3"]},
+{"x": 15,"y": 8,"id": 1,"routingTable":[],
+"inRange":["4"]},
+{"x": 6,"y": 13,"id": 2,"routingTable":[],
+"inRange":["0","3","4"]},
+{"x": 1,"y": 14,"id": 3,"routingTable":[],
+"inRange":["0","2"]},
+{"x": 15,"y": 15,"id": 4,"routingTable":[],
+"inRange":["1","2"]} ],
+"packet":{
+"id": "92225624-141d-46ae-8eb4-8e5b2266310a",
+"dest": "2",
+"sender": "4",
+"source": "1",
+"route": "1;4",
+"type": "RREQ"
+}
+,
+"actions":{
+"sending": "4",
+"receiving_processing":
+["1","2"],
+"receiving_discarding":
+[]
+}
+},
+{
+"xsize": 15,"ysize": 15,
+"type": "RTU",
+"nodes":[ {"x": 3,"y": 15,"id": 0,"routingTable":[],
+"inRange":["2","3"]},
+{"x": 15,"y": 8,"id": 1,"routingTable":[],
+"inRange":["4"]},
+{"x": 6,"y": 13,"id": 2,"routingTable":[{
+"destination":"4",
+"route":"2;4"
+}],
+"inRange":["0","3","4"]},
+{"x": 1,"y": 14,"id": 3,"routingTable":[],
+"inRange":["0","2"]},
+{"x": 15,"y": 15,"id": 4,"routingTable":[],
+"inRange":["1","2"]} ],
+"table_update":{
+"type": "add",
+"node": "2",
+"destination": "4",
+"route": "2;4"
+}
+},
+{
+"xsize": 15,"ysize": 15,
+"type": "RTU",
+"nodes":[ {"x": 3,"y": 15,"id": 0,"routingTable":[],
+"inRange":["2","3"]},
+{"x": 15,"y": 8,"id": 1,"routingTable":[],
+"inRange":["4"]},
+{"x": 6,"y": 13,"id": 2,"routingTable":[{
+"destination":"1",
+"route":"2;4;1"
+},
+{
+"destination":"4",
+"route":"2;4"
+}],
+"inRange":["0","3","4"]},
+{"x": 1,"y": 14,"id": 3,"routingTable":[],
+"inRange":["0","2"]},
+{"x": 15,"y": 15,"id": 4,"routingTable":[],
+"inRange":["1","2"]} ],
+"table_update":{
+"type": "add",
+"node": "2",
+"destination": "1",
+"route": "2;4;1"
+}
+},
+{
+"xsize": 15,"ysize": 15,
+"type": "RRES",
+"nodes":[ {"x": 3,"y": 15,"id": 0,"routingTable":[],
+"inRange":["2","3"]},
+{"x": 15,"y": 8,"id": 1,"routingTable":[],
+"inRange":["4"]},
+{"x": 6,"y": 13,"id": 2,"routingTable":[{
+"destination":"1",
+"route":"2;4;1"
+},
+{
+"destination":"4",
+"route":"2;4"
+}],
+"inRange":["0","3","4"]},
+{"x": 1,"y": 14,"id": 3,"routingTable":[],
+"inRange":["0","2"]},
+{"x": 15,"y": 15,"id": 4,"routingTable":[],
+"inRange":["1","2"]} ],
+"packet":{
+"id": "92225624-141d-46ae-8eb4-8e5b2266310a",
+"dest": "1",
+"sender": "2",
+"source": "2",
+"route": "2;4;1",
+"type": "RRES"
+}
+,
+"actions":{
+"sending": "2",
+"receiving_processing":
+["4"],
+"receiving_discarding":
+["0","3"]
+}
+},
+{
+"xsize": 15,"ysize": 15,
+"type": "RTU",
+"nodes":[ {"x": 3,"y": 15,"id": 0,"routingTable":[],
+"inRange":["2","3"]},
+{"x": 15,"y": 8,"id": 1,"routingTable":[],
+"inRange":["4"]},
+{"x": 6,"y": 13,"id": 2,"routingTable":[{
+"destination":"1",
+"route":"2;4;1"
+},
+{
+"destination":"4",
+"route":"2;4"
+}],
+"inRange":["0","3","4"]},
+{"x": 1,"y": 14,"id": 3,"routingTable":[],
+"inRange":["0","2"]},
+{"x": 15,"y": 15,"id": 4,"routingTable":[{
+"destination":"1",
+"route":"4;1"
+}],
+"inRange":["1","2"]} ],
+"table_update":{
+"type": "add",
+"node": "4",
+"destination": "1",
+"route": "4;1"
+}
+},
+{
+"xsize": 15,"ysize": 15,
+"type": "RTU",
+"nodes":[ {"x": 3,"y": 15,"id": 0,"routingTable":[],
+"inRange":["2","3"]},
+{"x": 15,"y": 8,"id": 1,"routingTable":[],
+"inRange":["4"]},
+{"x": 6,"y": 13,"id": 2,"routingTable":[{
+"destination":"1",
+"route":"2;4;1"
+},
+{
+"destination":"4",
+"route":"2;4"
+}],
+"inRange":["0","3","4"]},
+{"x": 1,"y": 14,"id": 3,"routingTable":[],
+"inRange":["0","2"]},
+{"x": 15,"y": 15,"id": 4,"routingTable":[{
+"destination":"1",
+"route":"4;1"
+},
+{
+"destination":"2",
+"route":"4;2"
+}],
+"inRange":["1","2"]} ],
+"table_update":{
+"type": "add",
+"node": "4",
+"destination": "2",
+"route": "4;2"
+}
+},
+{
+"xsize": 15,"ysize": 15,
+"type": "RRES",
+"nodes":[ {"x": 3,"y": 15,"id": 0,"routingTable":[],
+"inRange":["2","3"]},
+{"x": 15,"y": 8,"id": 1,"routingTable":[],
+"inRange":["4"]},
+{"x": 6,"y": 13,"id": 2,"routingTable":[{
+"destination":"1",
+"route":"2;4;1"
+},
+{
+"destination":"4",
+"route":"2;4"
+}],
+"inRange":["0","3","4"]},
+{"x": 1,"y": 14,"id": 3,"routingTable":[],
+"inRange":["0","2"]},
+{"x": 15,"y": 15,"id": 4,"routingTable":[{
+"destination":"1",
+"route":"4;1"
+},
+{
+"destination":"2",
+"route":"4;2"
+}],
+"inRange":["1","2"]} ],
+"packet":{
+"id": "92225624-141d-46ae-8eb4-8e5b2266310a",
+"dest": "1",
+"sender": "4",
+"source": "2",
+"route": "2;4;1",
+"type": "RRES"
+}
+,
+"actions":{
+"sending": "4",
+"receiving_processing":
+["1"],
+"receiving_discarding":
+["2"]
+}
+},
+{
+"xsize": 15,"ysize": 15,
+"type": "RTU",
+"nodes":[ {"x": 3,"y": 15,"id": 0,"routingTable":[],
+"inRange":["2","3"]},
+{"x": 15,"y": 8,"id": 1,"routingTable":[{
+"destination":"4",
+"route":"1;4"
+}],
+"inRange":["4"]},
+{"x": 6,"y": 13,"id": 2,"routingTable":[{
+"destination":"1",
+"route":"2;4;1"
+},
+{
+"destination":"4",
+"route":"2;4"
+}],
+"inRange":["0","3","4"]},
+{"x": 1,"y": 14,"id": 3,"routingTable":[],
+"inRange":["0","2"]},
+{"x": 15,"y": 15,"id": 4,"routingTable":[{
+"destination":"1",
+"route":"4;1"
+},
+{
+"destination":"2",
+"route":"4;2"
+}],
+"inRange":["1","2"]} ],
+"table_update":{
+"type": "add",
+"node": "1",
+"destination": "4",
+"route": "1;4"
+}
+},
+{
+"xsize": 15,"ysize": 15,
+"type": "RTU",
+"nodes":[ {"x": 3,"y": 15,"id": 0,"routingTable":[],
+"inRange":["2","3"]},
+{"x": 15,"y": 8,"id": 1,"routingTable":[{
+"destination":"2",
+"route":"1;4;2"
+},
+{
+"destination":"4",
+"route":"1;4"
+}],
+"inRange":["4"]},
+{"x": 6,"y": 13,"id": 2,"routingTable":[{
+"destination":"1",
+"route":"2;4;1"
+},
+{
+"destination":"4",
+"route":"2;4"
+}],
+"inRange":["0","3","4"]},
+{"x": 1,"y": 14,"id": 3,"routingTable":[],
+"inRange":["0","2"]},
+{"x": 15,"y": 15,"id": 4,"routingTable":[{
+"destination":"1",
+"route":"4;1"
+},
+{
+"destination":"2",
+"route":"4;2"
+}],
+"inRange":["1","2"]} ],
+"table_update":{
+"type": "add",
+"node": "1",
+"destination": "2",
+"route": "1;4;2"
+}
+},
+{
+"xsize": 15,"ysize": 15,
+"type": "DATA",
+"nodes":[ {"x": 3,"y": 15,"id": 0,"routingTable":[],
+"inRange":["2","3"]},
+{"x": 15,"y": 8,"id": 1,"routingTable":[{
+"destination":"2",
+"route":"1;4;2"
+},
+{
+"destination":"4",
+"route":"1;4"
+}],
+"inRange":["4"]},
+{"x": 6,"y": 13,"id": 2,"routingTable":[{
+"destination":"1",
+"route":"2;4;1"
+},
+{
+"destination":"4",
+"route":"2;4"
+}],
+"inRange":["0","3","4"]},
+{"x": 1,"y": 14,"id": 3,"routingTable":[],
+"inRange":["0","2"]},
+{"x": 15,"y": 15,"id": 4,"routingTable":[{
+"destination":"1",
+"route":"4;1"
+},
+{
+"destination":"2",
+"route":"4;2"
+}],
+"inRange":["1","2"]} ],
+"packet":{
+"id": "77e297c9-9eab-4a65-baea-f67d8f6fbd5d",
+"dest": "2",
+"sender": "1",
+"source": "1",
+"route": "1;4;2",
+"type": "DATA"
+}
+,
+"actions":{
+"sending": "1",
+"receiving_processing":
+["4"],
+"receiving_discarding":
+[]
+}
+},
+{
+"xsize": 15,"ysize": 15,
+"type": "ACK",
+"nodes":[ {"x": 3,"y": 15,"id": 0,"routingTable":[],
+"inRange":["2","3"]},
+{"x": 15,"y": 8,"id": 1,"routingTable":[{
+"destination":"2",
+"route":"1;4;2"
+},
+{
+"destination":"4",
+"route":"1;4"
+}],
+"inRange":["4"]},
+{"x": 6,"y": 13,"id": 2,"routingTable":[{
+"destination":"1",
+"route":"2;4;1"
+},
+{
+"destination":"4",
+"route":"2;4"
+}],
+"inRange":["0","3","4"]},
+{"x": 1,"y": 14,"id": 3,"routingTable":[],
+"inRange":["0","2"]},
+{"x": 15,"y": 15,"id": 4,"routingTable":[{
+"destination":"1",
+"route":"4;1"
+},
+{
+"destination":"2",
+"route":"4;2"
+}],
+"inRange":["1","2"]} ],
+"packet":{
+"id": "77e297c9-9eab-4a65-baea-f67d8f6fbd5d",
+"dest": "1",
+"sender": "4",
+"source": "4",
+"route": "4;1",
+"type": "ACK"
+}
+,
+"actions":{
+"sending": "4",
+"receiving_processing":
+["1"],
+"receiving_discarding":
+["2"]
+}
+},
+{
+"xsize": 15,"ysize": 15,
+"type": "DATA",
+"nodes":[ {"x": 3,"y": 15,"id": 0,"routingTable":[],
+"inRange":["2","3"]},
+{"x": 15,"y": 8,"id": 1,"routingTable":[{
+"destination":"2",
+"route":"1;4;2"
+},
+{
+"destination":"4",
+"route":"1;4"
+}],
+"inRange":["4"]},
+{"x": 6,"y": 13,"id": 2,"routingTable":[{
+"destination":"1",
+"route":"2;4;1"
+},
+{
+"destination":"4",
+"route":"2;4"
+}],
+"inRange":["0","3","4"]},
+{"x": 1,"y": 14,"id": 3,"routingTable":[],
+"inRange":["0","2"]},
+{"x": 15,"y": 15,"id": 4,"routingTable":[{
+"destination":"1",
+"route":"4;1"
+},
+{
+"destination":"2",
+"route":"4;2"
+}],
+"inRange":["1","2"]} ],
+"packet":{
+"id": "77e297c9-9eab-4a65-baea-f67d8f6fbd5d",
+"dest": "2",
+"sender": "4",
+"source": "1",
+"route": "1;4;2",
+"type": "DATA"
+}
+,
+"actions":{
+"sending": "4",
+"receiving_processing":
+["2"],
+"receiving_discarding":
+["1"]
+}
+},
+{
+"xsize": 15,"ysize": 15,
+"type": "ACK",
+"nodes":[ {"x": 3,"y": 15,"id": 0,"routingTable":[],
+"inRange":["2","3"]},
+{"x": 15,"y": 8,"id": 1,"routingTable":[{
+"destination":"2",
+"route":"1;4;2"
+},
+{
+"destination":"4",
+"route":"1;4"
+}],
+"inRange":["4"]},
+{"x": 6,"y": 13,"id": 2,"routingTable":[{
+"destination":"1",
+"route":"2;4;1"
+},
+{
+"destination":"4",
+"route":"2;4"
+}],
+"inRange":["0","3","4"]},
+{"x": 1,"y": 14,"id": 3,"routingTable":[],
+"inRange":["0","2"]},
+{"x": 15,"y": 15,"id": 4,"routingTable":[{
+"destination":"1",
+"route":"4;1"
+},
+{
+"destination":"2",
+"route":"4;2"
+}],
+"inRange":["1","2"]} ],
+"packet":{
+"id": "77e297c9-9eab-4a65-baea-f67d8f6fbd5d",
+"dest": "4",
+"sender": "2",
+"source": "2",
+"route": "2;4",
+"type": "ACK"
+}
+,
+"actions":{
+"sending": "2",
+"receiving_processing":
+["4"],
+"receiving_discarding":
+["0","3"]
+}
+}]
