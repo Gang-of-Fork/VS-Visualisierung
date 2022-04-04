@@ -516,9 +516,6 @@
             var normedDirVector = calculateNormedDirectionVector(nodeFrom, nodeTo)
             var arrowCoords = transformCoordsToCircleOutline(nodeFrom, nodeTo, normedDirVector)
 
-            console.log(normedDirVector)
-            console.log(arrowCoords)
-
             //create line with arrow
             var arrowLine = svg.append("line")
                 .attr("x1", x(arrowCoords.x1))
