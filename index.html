@@ -215,12 +215,30 @@
                 let html = `<h5 class="card-title">Node Info</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Node ID: ${d.id}</h6>
                         <p class="card-text">X: ${d.x}, Y: ${d.y} </br>`
-                if(d.routingTable.length > 0){
-                    html += `Routing Tabelle: ${d.routingTable} </br>` 
-                }
                 if(d.inRange.length > 0){
-                    html += `In Reichweite: ${d.inRange}</p>`
+                    html += `In Reichweite: ${d.inRange}`
                 }
+                if(d.routingTable.length > 0){
+                    html += `<h6>Routing Tabelle:</h6>
+                            <table class="table">
+                            <thead>
+                                <tr>
+                                <th scope="col">Destination</th>
+                                <th scope="col">Route</th>
+                                </tr>
+                            </thead>
+                            <tbody>`
+                    for(let x of d.routingTable){
+                        console.log(x);
+                        html += `<tr>
+                                    <td>${x.destination}</td>
+                                    <td>${x.route.replaceAll(";", " - ")}</td>
+                                </tr>` 
+                    }
+                    html += `</tbody></table>`
+                }
+                html += `</p>`
+                
                 return d3.select("#nodeInfo") 
                     .append("div")
                     .classed("card-body", true)
@@ -369,6 +387,7 @@
         }
 
         function changeState(d){
+            console.log(d);
             d3.select("#specificNodeInfo").remove();
             d3.select("#initNodeInfo").remove();
             d3.select("#nodeInfo")
@@ -459,7 +478,7 @@
                 let html = `<h5 class="card-title">Daten Log</h5><div class="row"><div class="col">`;
 
                 for(x in parsed){
-                    html += `<span id="logElement${x}">${x}: ${parsed[x].type}<br/></span>`;
+                    html += `<span onclick="changeState(${x})" onmouseover="" style="cursor: pointer;" id="logElement${x}">${x}: ${parsed[x].type}<br/></span>`;
                     if(~~((parsed.length-1) / 2) == x){
                         html += "</div><div class='col'>";
                     }
