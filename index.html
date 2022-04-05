@@ -103,11 +103,7 @@
         const width = 800 - margin.left - margin.right;
         const height = 800 - margin.top - margin.bottom;
 
-        const rScale = d3.scaleLinear()
-            .domain([0, default_coord])
-            .range([0, height])
-
-        const label_size = rScale(dot_radius) * 1.2;
+        let rScale;
 
 
         function initViz(data) {
@@ -153,11 +149,18 @@
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
             //adjust axis scale to testdata
-            const xsize = data.xsize? data.xsize: default_coord;
-            const ysize = data.ysize? data.ysize: default_coord;
+            const xsize = data.xsize ? data.xsize : default_coord;
+            const ysize = data.ysize ? data.ysize : default_coord;
 
             console.log(xsize);
             console.log(ysize);
+
+            //R Scale and label size
+            rScale = d3.scaleLinear()
+                .domain([0, xsize])
+                .range([0, height])
+
+            const label_size = rScale(dot_radius) * 1.2;
 
             // X scale and Axis
             x = d3.scaleLinear()
