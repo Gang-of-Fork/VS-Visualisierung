@@ -31,6 +31,12 @@
                             </div>
                         </div>
                     </div>
+                    <div id="dataInfo" class="card" style="width: 100%;">
+                        <div id="initDataInfo" class="card-body">
+                            <h5 class="card-title">Daten Info</h5>
+                            <p class="card-text">Hier werden Informationen zum aktuell ausgewählten Daten Log Eintrag angezeigt</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="col">
                     <div id="nodeInfo" class="card" style="width: 100%;">
@@ -41,19 +47,19 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="row">
+            <!--Slider for Log Navigation-->
             <div class="row">
                 <div style="text-align: center; margin-top: 20px; padding: 10px;">
                     <div id="dataRagenSlider"></div>
                 </div>
             </div>
-            <div class="row">
-                <!--Slider for Log Navigation-->
-                <div class="col">
-                    <div id="dataLog" class="card" style="width: 100%;">
-                        <div id="initDataLog" class="card-body">
-                            <h5 class="card-title">Daten Log</h5>
-                            <p class="card-text">Lade eine Datei hoch, um hier den Log zu verfolgen</p>
-                        </div>
+            <div class="col">
+                <div id="dataLog" class="card" style="width: 100%;">
+                    <div id="initDataLog" class="card-body">
+                        <h5 class="card-title">Daten Log</h5>
+                        <p class="card-text">Lade eine Datei hoch, um hier den Log zu verfolgen</p>
                     </div>
                 </div>
             </div>
@@ -118,14 +124,12 @@
 
             //reset function for later selection
             const resetSelection = function () {
-                console.log("reset");
                 //reset stroke width
                 d3.selectAll("circle").attr("stroke-width", "1px");
                 d3.select("#circleRange").remove();
                 //remove card info
                 d3.select("#initNodeInfo").remove();
                 d3.select("#specificNodeInfo").remove();
-                console.log(nodeInfo);
                 return d3.select("#nodeInfo")
                     .append("div")
                     .classed("card-body", true)
@@ -151,9 +155,6 @@
             //adjust axis scale to testdata
             const xsize = data.xsize ? data.xsize : default_coord;
             const ysize = data.ysize ? data.ysize : default_coord;
-
-            console.log(xsize);
-            console.log(ysize);
 
             //R Scale and label size
             rScale = d3.scaleLinear()
@@ -216,6 +217,8 @@
                 //change stroke-width of selected node
                 d3.selectAll("circle").attr("stroke-width", "1px");
                 var node = d3.select(`#nodeCircle${d.id}`).attr("stroke-width", "1.5px");
+                //d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeCircle${d.id}`);
+                //d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeText${d.id}`);
                 d3.select("#circleRange").remove();
                 var cx = node._groups[0][0].attributes.cx.value;
                 var cy = node._groups[0][0].attributes.cy.value;
@@ -246,7 +249,6 @@
                             </thead>
                             <tbody>`
                     for (let x of d.routingTable) {
-                        console.log(x);
                         html += `<tr>
                                     <td>${x.destination}</td>
                                     <td>${x.route.replaceAll(";", " - ")}</td>
@@ -298,13 +300,15 @@
         }
 
         function resetViz() {
-            console.log(document.getElementsByTagName("div"));
+            document.getElementsByTagName("div");
             document.getElementById("visualization").innerHTML = "";
         }
 
 
         function rreq(data) {
             d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#bce6eb");
+            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeCircle${data.actions.sending}`);
+            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeText${data.actions.sending}`);
             for (let i = 0; i < data.actions.receiving_discarding.length; i++) {
                 d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "#ff8585");
             }
@@ -316,6 +320,8 @@
 
         function rres(data) {
             d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#bce6eb");
+            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeCircle${data.actions.sending}`);
+            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeText${data.actions.sending}`);
             for (let i = 0; i < data.actions.receiving_discarding.length; i++) {
                 d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "#ff8585");
             }
@@ -328,7 +334,6 @@
         function rtu(data) {
             const pulse = function () {
                 var circle = d3.select("#pulseCircle");
-                console.log(circle);
                 (function repeat() {
                     circle = circle.transition()
                         //reset pulsing circle to node size
@@ -347,16 +352,18 @@
                 })();
             }
             var node = d3.select(`#nodeCircle${data.table_update.node}`);
-            console.log(node._groups[0][0].attributes);
             var cx = node._groups[0][0].attributes.cx.value;
             var cy = node._groups[0][0].attributes.cy.value;
+
+            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeCircle${data.table_update.node}`);
+            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeText${data.table_update.node}`);
 
             d3.select("#vis_svg")
                 .insert("circle", "circle")
                 .attr("id", "pulseCircle")
                 .attr("cx", cx)
                 .attr("cy", cy)
-                .attr("r", rScale(dot_radius + 8.75))
+                .attr("r", rScale(10))
                 .attr("fill", "#0d6efd")
                 .attr("stroke", "#0d6efd")
                 .each(pulse);
@@ -364,19 +371,18 @@
             node.attr("stroke", "#0d6efd").attr("fill", "white");
 
             const route = data.table_update.route.split(";");
-            console.log(route);
             var color = data.table_update.type == "remove" ? "red" : (data.table_update.type == "update" ? "green" : "black");
             for(let i = 0; i<route.length-1; i++){
                 connectNodesByArrow(data.nodes[route[i] ], data.nodes[route[i+1] ], d3.select("#vis_svg"), false, true, color);
             }
-            console.log(data.table_update);
             d3.select(`#nodeCircle${data.table_update.destination}`).style("stroke", "#0d6efd");
         }
 
         function dataViz(data) {
             d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#bce6eb");
+            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeCircle${data.actions.sending}`);
+            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeText${data.actions.sending}`);
             const route = data.packet.route.split(";");
-            console.log(route);
             for (let i = 0; i < route.length - 1; i++) {
                 connectNodesByArrow(data.nodes[route[i]], data.nodes[route[i + 1]], d3.select("#vis_svg"), false, true);
             }
@@ -391,6 +397,8 @@
 
         function ack(data) {
             d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#bce6eb");
+            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeCircle${data.actions.sending}`);
+            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeText${data.actions.sending}`);
             for (let i = 0; i < data.actions.receiving_discarding.length; i++) {
                 d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "#ff8585");
             }
@@ -401,8 +409,9 @@
         }
 
         function rerr(data) {
-            console.log(data);
             d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#bce6eb");
+            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeCircle${data.actions.sending}`);
+            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeText${data.actions.sending}`);
             for (let i = 0; i < data.actions.receiving_discarding.length; i++) {
                 d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "#ff8585");
             }
@@ -413,7 +422,27 @@
         }
 
         function changeState(d) {
-            console.log(d);
+            d3.select("#initDataInfo").remove();
+            d3.select("#specificDataInfo").remove();
+            let html = `<h5 class="card-title">Daten Info</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Type: ${testdata[d].type}</h6>`
+            if (testdata[d].type != "INIT" && testdata[d].type != "RTU" ){
+                html += `<p class="card-text">ID: ${testdata[d].packet.id} </br> Ziel: ${testdata[d].packet.dest} </br>Ursprung: ${testdata[d].packet.source} </br>Route: ${testdata[d].packet.route.replaceAll(";", " - ")}</p>`
+            } else if (testdata[d].type == "RTU"){
+                let description = testdata[d].table_update.type == "add" ? "Route hinzugefügt" : (testdata[d].table_update.type == "update" ? "Route erneuert": "Route entfernt") 
+                html += `<h6>${description}</h6><p class="card-text"> Node: ${testdata[d].table_update.node} </br> Ziel: ${testdata[d].table_update.destination} </br> Route: ${testdata[d].table_update.route.replaceAll(";", " - ")}</p>`
+            } else {
+                html += `<p class="card-text">Initiale Node Anordnung</p>`
+            }
+
+            d3.select("#dataInfo")
+                .append("div")
+                .classed("card-body", true)
+                .attr("id", "specificDataInfo")
+                .style("visibility", "visible")
+                .style("position", "relative")
+                .html(html);
+
             d3.select("#specificNodeInfo").remove();
             d3.select("#initNodeInfo").remove();
             d3.select("#nodeInfo")
@@ -426,9 +455,12 @@
                 .style("position", "relative")
                 .html(`<h5 class="card-title">Node Info</h5>
                   <p class="card-text">Selektiere eine Node um weitere Informationen zu erhalten</p>`);
+
             d3.select(`#logElement${currentState}`).style("color", "black").style("font-weight", "normal");
             currentState = d;
             d3.select(`#logElement${currentState}`).style("color", "#0d6efd").style("font-weight", "700");
+            console.log(currentState);
+            console.log(d3.select(`#logElement${currentState}`).style("color", "#0d6efd").style("font-weight", "700"));
             switch (testdata[currentState].type) {
                 case "RREQ":
                     resetViz();
@@ -479,7 +511,6 @@
         inputElement.addEventListener("change", handleFiles, false);
         function handleFiles() {
             const fileList = this.files;
-            console.log(this.files);
 
             const reader = new FileReader();
 
@@ -500,12 +531,33 @@
                 document.getElementById("ysize").innerHTML = init.ysize + " |";
 
                 resetViz();
+                d3.select("#specificDataInfo").remove();
+                d3.select("#specificNodeInfo").remove();
+                d3.select("#initDataInfo").remove();
+                d3.select("#initNodeInfo").remove();
+                d3.select("#nodeInfo")
+                    .append("div")
+                    .classed("card-body", true)
+                    .attr("id", "initNodeInfo")
+                    .style("visibility", "visible")
+                    .style("position", "relative")
+                    .html(`<h5 class="card-title">Node Info</h5>
+                        <p class="card-text">Selektiere eine Node um weitere Informationen zu erhalten</p>`);
+                d3.select("#dataInfo")
+                    .append("div")
+                    .classed("card-body", true)
+                    .attr("id", "initDataInfo")
+                    .style("visibility", "visible")
+                    .style("position", "relative")
+                    .html(`<h5 class="card-title">Daten Info</h5>
+                        <p class="card-text">Hier werden Informationen zum aktuell ausgewählten Daten Log Eintrag angezeigt</p>`);
                 initViz(init);
                 let html = `<h5 class="card-title">Daten Log</h5><div class="row"><div class="col">`;
-
+                var multpl = 1;
                 for (x in parsed) {
                     html += `<span onclick="changeState(${x})" onmouseover="" style="cursor: pointer;" id="logElement${x}">${x}: ${parsed[x].type}<br/></span>`;
-                    if (~~((parsed.length - 1) / 2) == x) {
+                    if (~~((parsed.length) / 8 * multpl) == x) {
+                        multpl++;
                         html += "</div><div class='col'>";
                     }
                 }
