@@ -224,7 +224,7 @@
                     .attr("id", "circleRange")
                     .attr("cx", cx)
                     .attr("cy", cy)
-                    .attr("r", rScale(dot_radius + 8.75))
+                    .attr("r", rScale(10))
                     .style("stroke-dasharray", ("10,5"))
                     .style("stroke", "green")
                     .style("fill-opacity", .2)
@@ -401,7 +401,15 @@
         }
 
         function rerr(data) {
-            //not implemented yet
+            console.log(data);
+            d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#bce6eb");
+            for (let i = 0; i < data.actions.receiving_discarding.length; i++) {
+                d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "#ff8585");
+            }
+            for (let i = 0; i < data.actions.receiving_processing.length; i++) {
+                d3.select(`#nodeCircle${data.actions.receiving_processing[i]}`).attr("fill", "#d2f5e3");
+                connectNodesByArrow(data.nodes[data.actions.sending], data.nodes[data.actions.receiving_processing[i]], d3.select("#vis_svg"), true, false, "red");
+            }
         }
 
         function changeState(d) {
@@ -441,7 +449,7 @@
                     initViz(testdata[currentState]);
                     ack(testdata[currentState]);
                     break;
-                case "RRER":
+                case "RERR":
                     resetViz();
                     initViz(testdata[currentState]);
                     rerr(testdata[currentState]);
