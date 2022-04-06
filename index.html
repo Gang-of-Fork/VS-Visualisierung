@@ -348,8 +348,9 @@
 
             const route = data.table_update.route.split(";");
             console.log(route);
+            var color = data.table_update.type == "remove" ? "red" : (data.table_update.type == "update" ? "green" : "black");
             for(let i = 0; i<route.length-1; i++){
-                connectNodesByArrow(data.nodes[route[i] ], data.nodes[route[i+1] ], d3.select("#vis_svg"), false, true);
+                connectNodesByArrow(data.nodes[route[i] ], data.nodes[route[i+1] ], d3.select("#vis_svg"), false, true, color);
             }
             console.log(data.table_update);   
             d3.select(`#nodeCircle${data.table_update.destination}`).style("stroke","#0d6efd");
