@@ -318,8 +318,12 @@
 
         function rreq(data) {
             d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#bce6eb");
-            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeCircle${data.actions.sending}`);
-            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeText${data.actions.sending}`);
+            d3.select(`#nodeCircle${data.actions.sending}`).each(function(){
+                this.parentNode.appendChild(this);
+            });
+            d3.select(`#nodeText${data.actions.sending}`).each(function(){
+                this.parentNode.appendChild(this);
+            });
             for (let i = 0; i < data.actions.receiving_discarding.length; i++) {
                 d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "#ff8585");
             }
@@ -331,8 +335,12 @@
 
         function rres(data) {
             d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#bce6eb");
-            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeCircle${data.actions.sending}`);
-            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeText${data.actions.sending}`);
+            d3.select(`#nodeCircle${data.actions.sending}`).each(function(){
+                this.parentNode.appendChild(this);
+            });
+            d3.select(`#nodeText${data.actions.sending}`).each(function(){
+                this.parentNode.appendChild(this);
+            });
             for (let i = 0; i < data.actions.receiving_discarding.length; i++) {
                 d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "#ff8585");
             }
@@ -366,8 +374,12 @@
             var cx = node._groups[0][0].attributes.cx.value;
             var cy = node._groups[0][0].attributes.cy.value;
 
-            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeCircle${data.table_update.node}`);
-            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeText${data.table_update.node}`);
+            d3.select(`#nodeCircle${data.table_update.node}`).each(function(){
+                this.parentNode.appendChild(this);
+            });
+            d3.select(`#nodeText${data.table_update.node}`).each(function(){
+                this.parentNode.appendChild(this);
+            });
 
             d3.select("#vis_svg")
                 .insert("circle", "circle")
@@ -391,8 +403,12 @@
 
         function dataViz(data) {
             d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#bce6eb");
-            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeCircle${data.actions.sending}`);
-            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeText${data.actions.sending}`);
+            d3.select(`#nodeCircle${data.actions.sending}`).each(function(){
+                this.parentNode.appendChild(this);
+            });
+            d3.select(`#nodeText${data.actions.sending}`).each(function(){
+                this.parentNode.appendChild(this);
+            });
             const route = data.packet.route.split(";");
             for (let i = 0; i < route.length - 1; i++) {
                 sendMessageBetweenNodes(data.nodes[route[i]], data.nodes[route[i + 1]], d3.select("#vis_svg"), false, false);
@@ -408,8 +424,12 @@
 
         function ack(data) {
             d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#bce6eb");
-            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeCircle${data.actions.sending}`);
-            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeText${data.actions.sending}`);
+            d3.select(`#nodeCircle${data.actions.sending}`).each(function(){
+                this.parentNode.appendChild(this);
+            });
+            d3.select(`#nodeText${data.actions.sending}`).each(function(){
+                this.parentNode.appendChild(this);
+            });
             for (let i = 0; i < data.actions.receiving_discarding.length; i++) {
                 d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "#ff8585");
             }
@@ -421,8 +441,12 @@
 
         function rerr(data) {
             d3.select(`#nodeCircle${data.actions.sending}`).attr("fill", "#bce6eb");
-            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeCircle${data.actions.sending}`);
-            d3.select("#vis_svg").append("use").attr("xlink:href", `#nodeText${data.actions.sending}`);
+            d3.select(`#nodeCircle${data.actions.sending}`).each(function(){
+                this.parentNode.appendChild(this);
+            });
+            d3.select(`#nodeText${data.actions.sending}`).each(function(){
+                this.parentNode.appendChild(this);
+            });
             for (let i = 0; i < data.actions.receiving_discarding.length; i++) {
                 d3.select(`#nodeCircle${data.actions.receiving_discarding[i]}`).attr("fill", "#ff8585");
             }
