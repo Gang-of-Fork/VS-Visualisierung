@@ -31,13 +31,9 @@
                             </div>
                         </div>
                     </div>
-                    <div id="dataInfo" class="card" style="width: 100%;">
-                        <div id="initDataInfo" class="card-body">
-                            <h5 class="card-title">Daten Info</h5>
-                            <p class="card-text">Hier werden Informationen zum aktuell ausgewählten Daten Log Eintrag angezeigt</p>
-                        </div>
-                    </div>
                 </div>
+            </div>
+            <div class="row">
                 <div class="col">
                     <div id="nodeInfo" class="card" style="width: 100%;">
                         <div id="initNodeInfo" class="card-body">
@@ -46,26 +42,34 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <!--Slider for Log Navigation-->
-            <div class="row">
-                <div style="text-align: center; margin-top: 20px; padding: 10px;">
-                    <div id="dataRagenSlider"></div>
+                <div class="col">
+                    <div id="dataInfo" class="card" style="width: 100%;">
+                        <div id="initDataInfo" class="card-body">
+                            <h5 class="card-title">Daten Info</h5>
+                            <p class="card-text">Hier werden Informationen zum aktuell ausgewählten Daten Log Eintrag
+                                angezeigt</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col">
-                <div id="dataLog" class="card" style="width: 100%;">
-                    <div id="initDataLog" class="card-body">
-                        <h5 class="card-title">Daten Log</h5>
-                        <p class="card-text">Lade eine Datei hoch, um hier den Log zu verfolgen</p>
+            <div class="row">
+                <!--Slider for Log Navigation-->
+                <div class="row">
+                    <div style="text-align: center; margin-top: 20px; padding: 10px;">
+                        <div id="dataRagenSlider"></div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div id="dataLog" class="card" style="width: 100%;">
+                        <div id="initDataLog" class="card-body">
+                            <h5 class="card-title">Daten Log</h5>
+                            <p class="card-text">Lade eine Datei hoch, um hier den Log zu verfolgen</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 
     <!-- Optional JavaScript; choose one of the two! -->
 
@@ -372,8 +376,8 @@
 
             const route = data.table_update.route.split(";");
             var color = data.table_update.type == "remove" ? "red" : (data.table_update.type == "update" ? "green" : "black");
-            for(let i = 0; i<route.length-1; i++){
-                connectNodesByArrow(data.nodes[route[i] ], data.nodes[route[i+1] ], d3.select("#vis_svg"), false, true, color);
+            for (let i = 0; i < route.length - 1; i++) {
+                connectNodesByArrow(data.nodes[route[i]], data.nodes[route[i + 1]], d3.select("#vis_svg"), false, true, color);
             }
             d3.select(`#nodeCircle${data.table_update.destination}`).style("stroke", "#0d6efd");
         }
@@ -426,10 +430,10 @@
             d3.select("#specificDataInfo").remove();
             let html = `<h5 class="card-title">Daten Info</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Type: ${testdata[d].type}</h6>`
-            if (testdata[d].type != "INIT" && testdata[d].type != "RTU" ){
+            if (testdata[d].type != "INIT" && testdata[d].type != "RTU") {
                 html += `<p class="card-text">ID: ${testdata[d].packet.id} </br> Ziel: ${testdata[d].packet.dest} </br>Ursprung: ${testdata[d].packet.source} </br>Route: ${testdata[d].packet.route.replaceAll(";", " - ")}</p>`
-            } else if (testdata[d].type == "RTU"){
-                let description = testdata[d].table_update.type == "add" ? "Route hinzugefügt" : (testdata[d].table_update.type == "update" ? "Route erneuert": "Route entfernt") 
+            } else if (testdata[d].type == "RTU") {
+                let description = testdata[d].table_update.type == "add" ? "Route hinzugefügt" : (testdata[d].table_update.type == "update" ? "Route erneuert" : "Route entfernt")
                 html += `<h6>${description}</h6><p class="card-text"> Node: ${testdata[d].table_update.node} </br> Ziel: ${testdata[d].table_update.destination} </br> Route: ${testdata[d].table_update.route.replaceAll(";", " - ")}</p>`
             } else {
                 html += `<p class="card-text">Initiale Node Anordnung</p>`
@@ -555,6 +559,7 @@
                 let html = `<h5 class="card-title">Daten Log</h5><div class="row"><div class="col">`;
                 var multpl = 1;
                 for (x in parsed) {
+                    console.log(parsed[x]);
                     html += `<span onclick="changeState(${x})" onmouseover="" style="cursor: pointer;" id="logElement${x}">${x}: ${parsed[x].type}<br/></span>`;
                     if (~~((parsed.length) / 8 * multpl) == x) {
                         multpl++;
@@ -665,17 +670,17 @@
             //only send an message, if there is enough space for it
             if (getDistanceBetweenNodes(nodeFrom, nodeTo) <= markerSizeUnscaled + dot_radius * 2) return
 
-            const refX = markerSize /12 * 11;
+            const refX = markerSize / 12 * 11;
             const refY = markerSize / 2;
 
             const x = d3.scaleLinear()
-            .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
-            .range([0, width]);       // This is the corresponding value I want in Pixel
+                .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
+                .range([0, width]);       // This is the corresponding value I want in Pixel
 
-             // X scale and Axis
-             const y = d3.scaleLinear()
-             .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
-             .range([height, 0]);       // This is the corresponding value I want in Pixel
+            // X scale and Axis
+            const y = d3.scaleLinear()
+                .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
+                .range([height, 0]);       // This is the corresponding value I want in Pixel
 
             //define DataPacketMarker
             svg.append("svg:defs").append("svg:marker")
@@ -683,7 +688,7 @@
                 .attr("refX", refX)
                 .attr("refY", refY)
                 .attr("markerWidth", markerSize)
-                .attr("markerHeight", markerSize )
+                .attr("markerHeight", markerSize)
                 .attr("orient", "auto")
                 .append("circle")
                 .attr("r", rScale(dot_radius + 8.75))
@@ -702,7 +707,7 @@
                 //scale graphic according to markerSize - DO NOT EDIT
                 .attr("d", `M${markerSize / 6},${markerSize / 6} L${markerSize / 6 * 5},${markerSize / 6 * 3} L${markerSize / 6},${markerSize / 6 * 5} L${markerSize / 6 * 3},${markerSize / 6 * 3} L${markerSize / 6},${markerSize / 6}`)
                 .style("stroke", color);
-                
+
 
             //calculate arrowCoordinates
             var normedDirVector = calculateNormedDirectionVector(nodeFrom, nodeTo)
@@ -724,36 +729,37 @@
 
             //create arrow for animation
             var arrowAnimation = svg.append("line")
-            .attr("marker-end", "url(#arrow)")
+                .attr("marker-end", "url(#arrow)")
 
             var animationCoords = {
-                x1:arrowCoords.x1,
-                y1:arrowCoords.y1,
-                x2start:arrowCoords.x1 + normedDirVector.x * 1.2,
-                y2start:arrowCoords.y1 + normedDirVector.y * 1.2,
-                x2end:arrowCoords.x2,
-                y2end:arrowCoords.y2
-            } 
-
-            if(withAnimation) {
-            repeatedArrowAnimation();
-            //start and repeat the animation
-            function repeatedArrowAnimation() {
-                arrowAnimation.
-                attr("x1", x(animationCoords.x1))
-                .attr("y1", y(animationCoords.y1))
-                .attr("x2", x(animationCoords.x2start))
-                .attr("y2", y(animationCoords.y2start))
-                .attr("stroke", "black")
-                .attr("stroke-width", 2)
-                .transition()
-                .ease(d3.easeLinear)
-                .duration(4000)
-                .attr("x2", x(animationCoords.x2end))
-                .attr("y2", y(animationCoords.y2end))
-                .remove()
+                x1: arrowCoords.x1,
+                y1: arrowCoords.y1,
+                x2start: arrowCoords.x1 + normedDirVector.x * 1.2,
+                y2start: arrowCoords.y1 + normedDirVector.y * 1.2,
+                x2end: arrowCoords.x2,
+                y2end: arrowCoords.y2
             }
-        }}
+
+            if (withAnimation) {
+                repeatedArrowAnimation();
+                //start and repeat the animation
+                function repeatedArrowAnimation() {
+                    arrowAnimation.
+                        attr("x1", x(animationCoords.x1))
+                        .attr("y1", y(animationCoords.y1))
+                        .attr("x2", x(animationCoords.x2start))
+                        .attr("y2", y(animationCoords.y2start))
+                        .attr("stroke", "black")
+                        .attr("stroke-width", 2)
+                        .transition()
+                        .ease(d3.easeLinear)
+                        .duration(4000)
+                        .attr("x2", x(animationCoords.x2end))
+                        .attr("y2", y(animationCoords.y2end))
+                        .remove()
+                }
+            }
+        }
 
 
         //takes two nodes and returns Directional Vector from x1 to x2 with {x, y} that has the length of 1 
