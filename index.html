@@ -59,7 +59,11 @@
                         <div id="dataRagenSlider"></div>
                     </div>
                 </div>
-                <div class="col">
+                <div class="row" style="margin-top: 20px; margin-bottom: 20px;">
+                    <button onclick="autoplay()" type="button" class="btn btn-primary" style="width: 240px"
+                        id="autoplay">Automatisch Abspielen</button>
+                </div>
+                <div class="row">
                     <div id="dataLog" class="card" style="width: 100%;">
                         <div id="initDataLog" class="card-body">
                             <h5 class="card-title">Daten Log</h5>
@@ -103,6 +107,8 @@
     <!-- Custom D3.js code -->
     <script>
         var currentState = 0;
+        var autoplayActive = false;
+        var interval;
         var testdata; //will be assigned if data is read
         var x;
         var y;
@@ -559,7 +565,6 @@
                 let html = `<h5 class="card-title">Daten Log</h5><div class="row"><div class="col">`;
                 var multpl = 1;
                 for (x in parsed) {
-                    console.log(parsed[x]);
                     html += `<span onclick="changeState(${x})" onmouseover="" style="cursor: pointer;" id="logElement${x}">${x}: ${parsed[x].type}<br/></span>`;
                     if (~~((parsed.length) / 8 * multpl) == x) {
                         multpl++;
@@ -804,6 +809,33 @@
                 x2: nodeTo.x - dirVector.x,
                 y2: nodeTo.y - dirVector.y
             }
+        }
+
+
+        function autoplay() {
+            if (!testdata || testdata.length == 0) {
+                alert("Bitte lade zuerst Daten!");
+                return;
+            }
+
+            if (autoplayActive) {
+                clearInterval(interval);
+                autoplayActive = false;
+                document.getElementById("autoplay").innerHTML = "Automatisch Abspielen";
+                document.getElementById("autoplay").className = "btn btn-primary";
+                return;
+            }
+
+            document.getElementById("autoplay").innerHTML = "Stop";
+            document.getElementById("autoplay").className = "btn btn-danger";
+            interval = setInterval(() => {
+                if(currentState < (testdata.length - 1)) {
+                    changeState(currentState + 1);
+                } else {
+                    autoplay();
+                }
+            }, 500);
+            autoplayActive = true;
         }
     </script>
 </body>
