@@ -102,6 +102,7 @@
     <script>
         const dot_radius = 0.75;
         const default_coord = 100;
+        const autoPlayInterval = 2000;
     </script>
 
     <!-- Custom D3.js code -->
@@ -834,7 +835,7 @@
                 } else {
                     autoplay();
                 }
-            }, 500);
+            }, autoPlayInterval);
             autoplayActive = true;
         }
     </script>
