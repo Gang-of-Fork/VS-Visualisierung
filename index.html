@@ -35,7 +35,7 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <div id="nodeInfo" class="card" style="width: 100%;">
+                    <div id="nodeInfo" class="card" style="width: 100%; max-height: 800px; overflow-y: auto;">
                         <div id="initNodeInfo" class="card-body">
                             <h5 class="card-title">Node Info</h5>
                             <p class="card-text">Selektiere eine Node um weitere Informationen zu erhalten</p>
@@ -598,6 +598,8 @@
             const refX = markerSize / 12 * 11;
             const refY = markerSize / 2;
 
+            
+
             //define arrowHead
             svg.append("svg:defs").append("svg:marker")
                 .attr("id", "arrowHead")
@@ -678,15 +680,6 @@
 
             const refX = markerSize / 12 * 11;
             const refY = markerSize / 2;
-
-            const x = d3.scaleLinear()
-                .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
-                .range([0, width]);       // This is the corresponding value I want in Pixel
-
-            // X scale and Axis
-            const y = d3.scaleLinear()
-                .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
-                .range([height, 0]);       // This is the corresponding value I want in Pixel
 
             //define DataPacketMarker
             svg.append("svg:defs").append("svg:marker")
