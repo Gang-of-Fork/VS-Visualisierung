@@ -681,7 +681,7 @@
         }
 
         //Like connectNodesByArrow but with a datapacket
-        function sendMessageBetweenNodes(nodeFrom, nodeTo, svg, withAnimation = true, withDottedLine = false) {
+        function sendMessageBetweenNodes(nodeFrom, nodeTo, svg, withAnimation = true, withDottedLine = false, color = "black") {
             //change markerSize to change the marker size lol
             const markerSizeUnscaled = dot_radius * 0.8;
             const markerSize = rScale(markerSizeUnscaled);
@@ -701,7 +701,7 @@
              .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
              .range([height, 0]);       // This is the corresponding value I want in Pixel
 
-            //define arrowHead
+            //define DataPacketMarker
             svg.append("svg:defs").append("svg:marker")
                 .attr("id", "arrow")
                 .attr("refX", refX)
@@ -713,6 +713,19 @@
                 .attr("r", rScale(dot_radius + 8.75))
                 .attr("fill", "black")
                 .attr("stroke", "black")
+
+            //define arrowHead
+            svg.append("svg:defs").append("svg:marker")
+                .attr("id", "arrowHead")
+                .attr("refX", refX)
+                .attr("refY", refY)
+                .attr("markerWidth", markerSize)
+                .attr("markerHeight", markerSize)
+                .attr("orient", "auto")
+                .append("path")
+                //scale graphic according to markerSize - DO NOT EDIT
+                .attr("d", `M${markerSize / 6},${markerSize / 6} L${markerSize / 6 * 5},${markerSize / 6 * 3} L${markerSize / 6},${markerSize / 6 * 5} L${markerSize / 6 * 3},${markerSize / 6 * 3} L${markerSize / 6},${markerSize / 6}`)
+                .style("stroke", color);
                 
 
             //calculate arrowCoordinates
