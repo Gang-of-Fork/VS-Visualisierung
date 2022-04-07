@@ -55,6 +55,22 @@
                     <div id="dataRagenSlider"></div>
                 </div>
             </div>
+            <div class="row">
+            <div class="col">
+                <div id="dataFilter" style="text-align: left" class="card" hidden="true">
+                    <div id="dataFilterForm" class="card-body">
+                            <div class="form-group">
+                              <h5>Filter by Logtype or ID</h5>
+                              <input type="text" class="form-control" id="filterInput" placeholder="Enter Logtype or PacketID">
+                              <small id="filterHelp" class="form-text text-muted">Logtypes include RREQ, RRES, RERR, DATA, ACK, RTU</small>
+                            </div>
+                            <button type="submit" class="btn btn-primary" onclick="applyFilter()">Filter anwenden</button>
+                            <button type="submit" class="btn btn-primary" onclick="removeFilter()">Filter löschen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class = "row">
             <div class="col">
                 <div id="dataLog" class="card" style="width: 100%;">
                     <div id="initDataLog" class="card-body">
@@ -64,6 +80,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
 
@@ -100,8 +117,10 @@
     <script>
         var currentState = 0;
         var testdata; //will be assigned if data is read
+        var unfiltered_data;
         var x;
         var y;
+        var rScale;
 
 
         // set the dimensions and margins of the graph
@@ -109,8 +128,59 @@
         const width = 800 - margin.left - margin.right;
         const height = 800 - margin.top - margin.bottom;
 
-        let rScale;
 
+        function applyFilter() {
+            let input = document.getElementById("filterInput").value;
+            
+            let filtered_data = unfiltered_data.filter((state) => {
+                if(state.packet) {
+                    console.log("statetype ", state.type, "input", input)
+                    return state.type == input || state.packet.id == input;
+                } else {
+                    return state.type == input || state.type == "INIT";
+                }
+            })
+            if(filtered_data.length > 0) {
+                console.log(filtered_data)
+                testdata = filtered_data
+                resetViz();
+                initViz(testdata[0])
+                //update data log
+                updateDataLog(testdata)
+            } else {
+                console.log("filter returned no result")
+            }
+
+        }
+
+        function removeFilter() {
+            testdata = unfiltered_data;
+            resetViz()
+            console.log(testdata[0])
+            initViz(testdata[0])
+            
+            updateDataLog(testdata);
+        }
+
+        function updateDataLog(data) {
+            d3.select("#initDataLog").remove()
+            let html = `<h5 class="card-title">Daten Log</h5><div class="row"><div class="col">`;
+                var multpl = 1;
+                for (x in data) {
+                    html += `<span onclick="changeState(${x})" onmouseover="" style="cursor: pointer;" id="logElement${x}">${x}: ${data[x].type}<br/></span>`;
+                    if (~~((data.length) / 8 * multpl) == x) {
+                        multpl++;
+                        html += "</div><div class='col'>";
+                    }
+                }
+                html += "</div></div>";
+                d3.select("#dataLog").append("div").attr("id", "initDataLog").classed("card-body", true).html(html);
+                //coloring current state green
+                d3.select(`#logElement${currentState}`).style("color", "#0d6efd").style("font-weight", "700");
+
+                document.getElementById("dataRagenSlider").innerHTML = `<input type="range" class="form-range" min="0" max="${data.length - 1}" value=${currentState} step="1" oninput="changeState(this.value)" id="customRange3">`;
+                document.getElementById("dataFilter").hidden = false;
+            }
 
         function initViz(data) {
 
@@ -516,10 +586,11 @@
 
             reader.addEventListener('load', (event) => {
                 //reset log data
-                d3.select("#initDataLog").remove()
+                
                 currentState = 0;
                 const parsed = JSON.parse(event.target.result);
                 testdata = parsed;
+                unfiltered_data = parsed;
 
                 const init = parsed.filter(d => d.type == "INIT")[0];
 
@@ -552,22 +623,7 @@
                     .html(`<h5 class="card-title">Daten Info</h5>
                         <p class="card-text">Hier werden Informationen zum aktuell ausgewählten Daten Log Eintrag angezeigt</p>`);
                 initViz(init);
-                let html = `<h5 class="card-title">Daten Log</h5><div class="row"><div class="col">`;
-                var multpl = 1;
-                for (x in parsed) {
-                    html += `<span onclick="changeState(${x})" onmouseover="" style="cursor: pointer;" id="logElement${x}">${x}: ${parsed[x].type}<br/></span>`;
-                    if (~~((parsed.length) / 8 * multpl) == x) {
-                        multpl++;
-                        html += "</div><div class='col'>";
-                    }
-                }
-                html += "</div></div>";
-                d3.select("#dataLog").append("div").attr("id", "initDataLog").classed("card-body", true).html(html);
-                //coloring current state green
-                d3.select(`#logElement${currentState}`).style("color", "#0d6efd").style("font-weight", "700");
-
-                document.getElementById("dataRagenSlider").innerHTML = `<input type="range" class="form-range" min="0" max="${parsed.length - 1}" value=${currentState} step="1" oninput="changeState(this.value)" id="customRange3">`;
-
+                updateDataLog(parsed)
             });
 
             reader.readAsText(this.files[0])
