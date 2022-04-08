@@ -146,29 +146,23 @@
             
             let filtered_data = unfiltered_data.filter((state) => {
                 if(state.packet) {
-                    console.log("statetype ", state.type, "input", input)
                     return state.type == input || state.packet.id == input;
                 } else {
                     return state.type == input || state.type == "INIT";
                 }
             })
             if(filtered_data.length > 0) {
-                console.log(filtered_data)
                 testdata = filtered_data
                 resetViz();
                 initViz(testdata[0])
                 //update data log
                 updateDataLog(testdata)
-            } else {
-                console.log("filter returned no result")
-            }
-
+            } 
         }
 
         function removeFilter() {
             testdata = unfiltered_data;
             resetViz()
-            console.log(testdata[0])
             initViz(testdata[0])
             
             updateDataLog(testdata);
