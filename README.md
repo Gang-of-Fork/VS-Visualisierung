@@ -7,7 +7,7 @@
 ```
 [
   {
-    "type":"RREQ | RRES | DATA | RERR | ACK | RTU | INIT",
+    "type":"RREQ | RRES | DATA | RERR | ACK | RTU | INIT | MOVE",
     "xsize": number,
     "ysize": number,
     //number of nodes is equal to length of nodes array
@@ -50,7 +50,15 @@
       "destination": string (NodeId),
       //route contains new route on add and old route on remove 
       "route": string
-  }
+    },
+    
+    //move property is only set on type MOVE
+    "move": {
+      "id": string (NodeId),
+      "oldX": number,
+      "oldY": number
+    }
+    
 ]
 ```
 
@@ -65,3 +73,4 @@
 - ACK = ACKnoledgement packet
 - DATA = DATA packet
 - RTU = Routing Table Update
+- MOVE = Node MOVE
