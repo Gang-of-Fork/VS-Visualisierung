@@ -780,7 +780,9 @@
                 .append("path")
                 //scale graphic according to markerSize - DO NOT EDIT
                 .attr("d", `M${markerSize / 6},${markerSize / 6} L${markerSize / 6 * 5},${markerSize / 6 * 3} L${markerSize / 6},${markerSize / 6 * 5} L${markerSize / 6 * 3},${markerSize / 6 * 3} L${markerSize / 6},${markerSize / 6}`)
-                .style("stroke", color);
+                .style("stroke", color); 
+        
+
 
 
             //calculate arrowCoordinates
@@ -790,15 +792,29 @@
             console.log(normedDirVector)
             console.log(arrowCoords)
 
-            //create line with arrow
-            var arrowLine = svg.append("line")
+            if(getDistanceBetweenNodes(nodeFrom, nodeTo)<20){
+            //create black line with arrow
+                var arrowLine = svg.append("line")
                 .attr("x1", x(arrowCoords.x1))
                 .attr("y1", y(arrowCoords.y1))
                 .attr("x2", x(arrowCoords.x2))
                 .attr("y2", y(arrowCoords.y2))
                 .attr("stroke", "black")
                 .attr("stroke-width", 2)
+                .attr("marker-end", "url(#arrowHead)") 
+            }
+            else{
+            //create red line with arrow
+                var arrowLine = svg.append("line")
+                .attr("x1", x(arrowCoords.x1))
+                .attr("y1", y(arrowCoords.y1))
+                .attr("x2", x(arrowCoords.x2))
+                .attr("y2", y(arrowCoords.y2))
+                .attr("stroke", "red")
+                .attr("stroke-width", 2)
                 .attr("marker-end", "url(#arrowHead)")
+            }
+            
 
 
             //create arrow for animation
