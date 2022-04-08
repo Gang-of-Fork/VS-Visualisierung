@@ -792,7 +792,7 @@
             console.log(normedDirVector)
             console.log(arrowCoords)
 
-            if(getDistanceBetweenNodes(nodeFrom, nodeTo)<20){
+            if(getDistanceBetweenNodes(nodeFrom, nodeTo)<=10){
             //create black line with arrow
                 var arrowLine = svg.append("line")
                 .attr("x1", x(arrowCoords.x1))
