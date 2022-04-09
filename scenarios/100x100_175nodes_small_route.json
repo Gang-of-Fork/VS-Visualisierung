@@ -8616,7 +8616,7 @@
 "route":"0;30"
 }],
 "inRange":["30","55","99","174"]},
-{"x": 39,"y": 19,"id": 1,"routingTable":[{
+{"x": 70,"y": 74,"id": 1,"routingTable":[{
 "destination":"0",
 "route":"1;30;0"
 },

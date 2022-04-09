@@ -4625,7 +4625,7 @@
 "route":"0;12;17;5;15;8"
 }],
 "inRange":["2","12"]},
-{"x": 28,"y": 12,"id": 1,"routingTable":[{
+{"x": 0,"y": 4,"id": 1,"routingTable":[{
 "destination":"0",
 "route":"1;13;8;15;5;17;12;0"
 },
