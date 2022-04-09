@@ -163,9 +163,11 @@
                 var multpl = 1;
                 for (x in data) {
                     html += `<span onclick="changeState(${x})" onmouseover="" style="cursor: pointer;" id="logElement${x}">${x}: ${data[x].type}<br/></span>`;
-                    if (~~((data.length) / 8 * multpl) == x) {
+                    if ((Math.ceil((data.length) / 8) * multpl) - 1 == x) {
                         multpl++;
-                        html += "</div><div class='col'>";
+                        if(x!= data.length - 1){
+                            html += "</div><div class='col'>";
+                        }
                     }
                 }
                 html += "</div></div>";
