@@ -23,7 +23,7 @@
         <div class="col">
             <div class="row">
                 <div class="col">
-                    <div class="card" style="margin-bottom: 30px;">
+                    <div class="card">
                         <div class="card-body">
                             <div class="mb-3">
                                 <label for="formFile" class="form-label">Daten auswählen</label>
@@ -31,9 +31,29 @@
                             </div>
                         </div>
                     </div>
+                    <div id="dataInfo" class="card" style="width: 100%; margin-top: 20px;">
+                        <div id="initDataInfo" class="card-body">
+                            <h5 class="card-title">Daten Info</h5>
+                            <p class="card-text">Hier werden Informationen zum aktuell ausgewählten Daten Log Eintrag
+                                angezeigt</p>
+                        </div>
+                    </div>
+                    <div id="dataFilter" style="text-align: left; margin-top: 20px;" class="card" hidden="true">
+                        <div id="dataFilterForm" class="card-body">
+                                <div class="form-group">
+                                    <h5>Filter by Logtype or ID</h5>
+                                    <input type="text" class="form-control" id="filterInput" placeholder="Enter Logtype or PacketID">
+                                    <small id="filterHelp" class="form-text text-muted">Logtypes include RREQ, RRES, RERR, DATA, ACK, RTU</small>
+                                </div>
+                                <button type="submit" style="margin: 5px; margin-left: 0px;" class="btn btn-primary" onclick="applyFilter()">Filter anwenden</button>
+                                <button type="submit" style="margin: 5px; margin-left: 0px;" class="btn btn-primary" onclick="removeFilter()">Filter löschen</button>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; margin-bottom: 20px;">
+                        <button onclick="autoplay()" type="button" class="btn btn-primary" style="width: 100%"
+                            id="autoplay">Automatisch Abspielen</button>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col">
                     <div id="nodeInfo" class="card" style="width: 100%; max-height: 800px; overflow-y: auto;">
                         <div id="initNodeInfo" class="card-body">
@@ -42,51 +62,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div id="dataInfo" class="card" style="width: 100%;">
-                        <div id="initDataInfo" class="card-body">
-                            <h5 class="card-title">Daten Info</h5>
-                            <p class="card-text">Hier werden Informationen zum aktuell ausgewählten Daten Log Eintrag
-                                angezeigt</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <!--Slider for Log Navigation-->
-                <div class="row">
-                    <div style="text-align: center; margin-top: 20px; padding: 10px;">
-                        <div id="dataRagenSlider"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-            <div class="col">
-                <div id="dataFilter" style="text-align: left" class="card" hidden="true">
-                    <div id="dataFilterForm" class="card-body">
-                            <div class="form-group">
-                              <h5>Filter by Logtype or ID</h5>
-                              <input type="text" class="form-control" id="filterInput" placeholder="Enter Logtype or PacketID">
-                              <small id="filterHelp" class="form-text text-muted">Logtypes include RREQ, RRES, RERR, DATA, ACK, RTU</small>
-                            </div>
-                            <button type="submit" class="btn btn-primary" onclick="applyFilter()">Filter anwenden</button>
-                            <button type="submit" class="btn btn-primary" onclick="removeFilter()">Filter löschen</button>
-                    </div>
                 </div>
             </div>
         </div>
-        <div class = "row">
-                <div class="row" style="margin-top: 20px; margin-bottom: 20px;">
-                    <button onclick="autoplay()" type="button" class="btn btn-primary" style="width: 240px"
-                        id="autoplay">Automatisch Abspielen</button>
+        <div class="row">
+            <!--Slider for Log Navigation-->
+            <div class="row">
+                <div style="text-align: center; margin-top: 20px; padding: 10px;">
+                    <div id="dataRagenSlider"></div>
                 </div>
-                <div class="row">
-                    <div id="dataLog" class="card" style="width: 100%;">
-                        <div id="initDataLog" class="card-body">
-                            <h5 class="card-title">Daten Log</h5>
-                            <p class="card-text">Lade eine Datei hoch, um hier den Log zu verfolgen</p>
-                        </div>
-                    </div>
+            </div>
+            <div id="dataLog" class="card" style="width: 100%;">
+                <div id="initDataLog" class="card-body">
+                    <h5 class="card-title">Daten Log</h5>
+                    <p class="card-text">Lade eine Datei hoch, um hier den Log zu verfolgen</p>
                 </div>
             </div>
         </div>
@@ -521,16 +510,42 @@
             }
         }
 
+        function move(data){
+            const label_size = rScale(dot_radius) * 1.2;
+
+            d3.select("#vis_svg")
+                .append("circle")
+                .attr("cx", function (d) { return x(data.move.oldX) })
+                .attr("cy", function (d) { return y(data.move.oldY) })
+                .attr("r", rScale(dot_radius))
+                .attr("stroke", "red")
+                .style("stroke-dasharray", ("3, 3"))
+                .attr("fill", "white");
+
+            d3.select("#vis_svg")    
+                .append("text")
+                .attr("x", function (d) { return x(data.move.oldX) })
+                .attr("y", function (d) { return y(data.move.oldY) + 0.4 * label_size })
+                .attr('font-size', label_size)
+                .attr("text-anchor", "middle")
+                .text(function (d) { return "" + data.move.id });
+            
+            d3.select(`#nodeCircle${data.move.id}`)
+                .attr("stroke", "green");
+        }
+
         function changeState(d) {
             d3.select("#initDataInfo").remove();
             d3.select("#specificDataInfo").remove();
             let html = `<h5 class="card-title">Daten Info</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Type: ${testdata[d].type}</h6>`
-            if (testdata[d].type != "INIT" && testdata[d].type != "RTU") {
+            if (testdata[d].type != "INIT" && testdata[d].type != "RTU" && testdata[d].type != "MOVE") {
                 html += `<p class="card-text">ID: ${testdata[d].packet.id} </br> Ziel: ${testdata[d].packet.dest} </br>Ursprung: ${testdata[d].packet.source} </br>Route: ${testdata[d].packet.route.replaceAll(";", " - ")}</p>`
             } else if (testdata[d].type == "RTU") {
                 let description = testdata[d].table_update.type == "add" ? "Route hinzugefügt" : (testdata[d].table_update.type == "update" ? "Route erneuert" : "Route entfernt")
-                html += `<h6>${description}</h6><p class="card-text"> Node: ${testdata[d].table_update.node} </br> Ziel: ${testdata[d].table_update.destination} </br> Route: ${testdata[d].table_update.route.replaceAll(";", " - ")}</p>`
+                html += `<h6>${description}</h6><p class="card-text"> Ziel: ${testdata[d].table_update.destination} </br> Node: ${testdata[d].table_update.node} </br> Route: ${testdata[d].table_update.route.replaceAll(";", " - ")}</p>`
+            } else if (testdata[d].type == "MOVE"){
+                html += `<p class="card-text"> Node: ${testdata[d].move.id} </br> Altes X/Y: ${testdata[d].move.oldX}/${testdata[d].move.oldY} </br> Neues X/Y: ${testdata[d].nodes[testdata[d].move.id].x}/${testdata[d].nodes[testdata[d].move.id].y}</p>`
             } else {
                 html += `<p class="card-text">Initiale Node Anordnung</p>`
             }
@@ -595,6 +610,11 @@
                     resetViz();
                     initViz(testdata[currentState]);
                     rtu(testdata[currentState]);
+                    break;
+                case "MOVE":
+                    resetViz();
+                    initViz(testdata[currentState]);
+                    move(testdata[currentState]);
                     break;
                 default:
                     break;
