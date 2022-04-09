@@ -584,7 +584,7 @@
             let html = `<h5 class="card-title">Daten Info</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Type: ${testdata[d].type}</h6>`
             if (testdata[d].type != "INIT" && testdata[d].type != "RTU" && testdata[d].type != "MOVE") {
-                html += `<p class="card-text">ID: ${testdata[d].packet.id} </br> Ziel: ${testdata[d].packet.dest} </br>Ursprung: ${testdata[d].packet.source} </br>Route: ${testdata[d].packet.route.replaceAll(";", " - ")}</p>`
+                html += `<p class="card-text">ID: ${testdata[d].packet.id} </br> Ursprung: ${testdata[d].packet.source} </br> Ziel: ${testdata[d].packet.dest} </br> Route: ${testdata[d].packet.route.replaceAll(";", " - ")}</p>`
             } else if (testdata[d].type == "RTU") {
                 let description = testdata[d].table_update.type == "add" ? "Route hinzugefügt" : (testdata[d].table_update.type == "update" ? "Route erneuert" : "Route entfernt")
                 html += `<h6>${description}</h6><p class="card-text"> Ziel: ${testdata[d].table_update.destination} </br> Node: ${testdata[d].table_update.node} </br> Route: ${testdata[d].table_update.route.replaceAll(";", " - ")}</p>`
