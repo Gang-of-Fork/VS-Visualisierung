@@ -170,14 +170,14 @@
                         }
                     }
                 }
-                html += "</div></div>";
-                d3.select("#dataLog").append("div").attr("id", "initDataLog").classed("card-body", true).html(html);
-                //coloring current state green
-                d3.select(`#logElement${currentState}`).style("color", "#0d6efd").style("font-weight", "700");
+            html += "</div></div>";
+            d3.select("#dataLog").append("div").attr("id", "initDataLog").classed("card-body", true).html(html);
+            //coloring current state green
+            d3.select(`#logElement${currentState}`).style("color", "#0d6efd").style("font-weight", "700");
 
-                document.getElementById("dataRagenSlider").innerHTML = `<input type="range" class="form-range" min="0" max="${data.length - 1}" value=${currentState} step="1" oninput="changeState(this.value)" id="customRange3">`;
-                document.getElementById("dataFilter").hidden = false;
-            }
+            document.getElementById("dataRagenSlider").innerHTML = `<input type="range" class="form-range" min="0" max="${data.length - 1}" value=${currentState} step="1" oninput="changeState(this.value)" id="customRange3">`;
+            document.getElementById("dataFilter").hidden = false;
+        }
 
         function initViz(data) {
 
@@ -515,6 +515,37 @@
         function move(data){
             const label_size = rScale(dot_radius) * 1.2;
 
+            const moving = function () {
+                var circle = d3.select("#movingCircle");
+                (function repeat() {
+                    circle = circle.transition()
+                        .attr("cx", function (d) { return x(data.move.oldX) })
+                        .attr("cy", function (d) { return y(data.move.oldY) })
+                        .attr("stroke", "red")
+                        .style("stroke-dasharray", ("3, 3"))
+                        .attr("fill", "white")
+                        .attr("fill", "#ff8585")
+                        .duration(0)
+                        .transition()
+                        .attr("cx", function (d) { return x(data.nodes[data.move.id].x) })
+                        .attr("cy", function (d) { return y(data.nodes[data.move.id].y) })
+                        .attr("stroke", "green")
+                        .attr("fill", "#d2f5e3")
+                        .duration(2000)
+                        .on("end", repeat);
+                })();
+            }
+
+            d3.select("#vis_svg")
+                .append("circle")
+                .attr("id", "movingCircle")
+                .attr("cx", function (d) { return x(data.move.oldX) })
+                .attr("cy", function (d) { return y(data.move.oldY) })
+                .attr("r", rScale(dot_radius))
+                .attr("stroke", "black")
+                .attr("fill", "white")
+                .each(moving);
+
             d3.select("#vis_svg")
                 .append("circle")
                 .attr("cx", function (d) { return x(data.move.oldX) })
@@ -522,7 +553,8 @@
                 .attr("r", rScale(dot_radius))
                 .attr("stroke", "red")
                 .style("stroke-dasharray", ("3, 3"))
-                .attr("fill", "white");
+                .attr("fill", "white")
+                .attr("fill", "#ff8585");
 
             d3.select("#vis_svg")    
                 .append("text")
@@ -530,10 +562,20 @@
                 .attr("y", function (d) { return y(data.move.oldY) + 0.4 * label_size })
                 .attr('font-size', label_size)
                 .attr("text-anchor", "middle")
-                .text(function (d) { return "" + data.move.id });
+                .text(function (d) { return "" + data.move.id })
+                .attr("fill", "#d2f5e3");
             
             d3.select(`#nodeCircle${data.move.id}`)
-                .attr("stroke", "green");
+                .attr("stroke", "green")
+                .attr("fill", "#d2f5e3")
+                .style("stroke-dasharray", ("3, 3"));
+
+            d3.select(`#nodeCircle${data.move.id}`).each(function(){
+                this.parentNode.appendChild(this);
+            });
+            d3.select(`#nodeText${data.move.id}`).each(function(){
+                this.parentNode.appendChild(this);
+            });
         }
 
         function changeState(d) {
@@ -542,7 +584,7 @@
             let html = `<h5 class="card-title">Daten Info</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Type: ${testdata[d].type}</h6>`
             if (testdata[d].type != "INIT" && testdata[d].type != "RTU" && testdata[d].type != "MOVE") {
-                html += `<p class="card-text">ID: ${testdata[d].packet.id} </br> Ziel: ${testdata[d].packet.dest} </br>Ursprung: ${testdata[d].packet.source} </br>Route: ${testdata[d].packet.route.replaceAll(";", " - ")}</p>`
+                html += `<p class="card-text">ID: ${testdata[d].packet.id} </br> Ursprung: ${testdata[d].packet.source} </br> Ziel: ${testdata[d].packet.dest} </br> Route: ${testdata[d].packet.route.replaceAll(";", " - ")}</p>`
             } else if (testdata[d].type == "RTU") {
                 let description = testdata[d].table_update.type == "add" ? "Route hinzugefügt" : (testdata[d].table_update.type == "update" ? "Route erneuert" : "Route entfernt")
                 html += `<h6>${description}</h6><p class="card-text"> Ziel: ${testdata[d].table_update.destination} </br> Node: ${testdata[d].table_update.node} </br> Route: ${testdata[d].table_update.route.replaceAll(";", " - ")}</p>`
@@ -865,7 +907,7 @@
                         .attr("stroke-width", 2)
                         .transition()
                         .ease(d3.easeLinear)
-                        .duration(4000)
+                        .duration(2000)
                         .attr("x2", x(animationCoords.x2end))
                         .attr("y2", y(animationCoords.y2end))
                         .remove()
